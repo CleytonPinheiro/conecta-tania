@@ -57,6 +57,7 @@ export default function Header() {
                 </Link>
               );
             })}
+            <ThemeToggle />
           </nav>
 
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
@@ -83,6 +84,12 @@ export default function Header() {
                     </Link>
                   );
                 })}
+                <div className="pt-4 border-t mt-4">
+                  <div className="flex items-center justify-between px-4">
+                    <span className="text-sm text-muted-foreground">Tema</span>
+                    <ThemeToggle />
+                  </div>
+                </div>
               </nav>
             </SheetContent>
           </Sheet>
