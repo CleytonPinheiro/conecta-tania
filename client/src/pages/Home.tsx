@@ -1,33 +1,22 @@
-import { useState, useRef, useMemo } from 'react';
+import { useRef, useMemo } from 'react';
+import { Link } from 'wouter';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
-import ClassFilter from '@/components/ClassFilter';
-import ProjectsGrid from '@/components/ProjectsGrid';
 import Footer from '@/components/Footer';
 import { projectsData } from '@/lib/projectsData';
-
-type FilterOption = 'all' | '1C' | '2C';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ArrowRight, Code, Leaf, Users, Calendar, Map } from 'lucide-react';
 
 export default function Home() {
-  const [activeFilter, setActiveFilter] = useState<FilterOption>('all');
   const projectsRef = useRef<HTMLDivElement>(null);
-
-  const counts = useMemo(() => ({
-    all: projectsData.length,
-    '1C': projectsData.filter(p => p.turma === '1C').length,
-    '2C': projectsData.filter(p => p.turma === '2C').length,
-  }), []);
 
   const totalStudents = useMemo(() => {
     const allStudents = new Set<string>();
     projectsData.forEach(p => p.students.forEach(s => allStudents.add(s)));
     return allStudents.size;
   }, []);
-
-  const filteredProjects = useMemo(() => {
-    if (activeFilter === 'all') return projectsData;
-    return projectsData.filter(p => p.turma === activeFilter);
-  }, [activeFilter]);
 
   const projects1C = useMemo(() => 
     projectsData.filter(p => p.turma === '1C'), 
@@ -37,15 +26,27 @@ export default function Home() {
     projectsData.filter(p => p.turma === '2C'), 
   []);
 
+  const students1C = useMemo(() => {
+    const s = new Set<string>();
+    projects1C.forEach(p => p.students.forEach(st => s.add(st)));
+    return s.size;
+  }, [projects1C]);
+
+  const students2C = useMemo(() => {
+    const s = new Set<string>();
+    projects2C.forEach(p => p.students.forEach(st => s.add(st)));
+    return s.size;
+  }, [projects2C]);
+
   const scrollToProjects = () => {
     projectsRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <div className="min-h-screen bg-background" data-testid="page-home">
+    <div className="min-h-screen bg-background flex flex-col" data-testid="page-home">
       <Header />
       
-      <main>
+      <main className="flex-1">
         <Hero 
           totalProjects={projectsData.length}
           totalStudents={totalStudents}
@@ -55,28 +56,130 @@ export default function Home() {
         <section 
           ref={projectsRef} 
           className="py-12 md:py-16 lg:py-20"
-          data-testid="section-projects"
+          data-testid="section-turmas"
         >
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 space-y-8">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground" data-testid="text-projects-title">
-                Projetos
+            <div className="text-center space-y-4">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground" data-testid="text-turmas-title">
+                Escolha uma Turma
               </h2>
-              <ClassFilter 
-                activeFilter={activeFilter}
-                onFilterChange={setActiveFilter}
-                counts={counts}
-              />
+              <p className="text-muted-foreground max-w-xl mx-auto">
+                Navegue pelos projetos de cada turma e conheça os trabalhos desenvolvidos pelos alunos.
+              </p>
             </div>
             
-            {activeFilter === 'all' ? (
-              <div className="space-y-12">
-                <ProjectsGrid projects={projects1C} turmaLabel="Turma 1C" />
-                <ProjectsGrid projects={projects2C} turmaLabel="Turma 2C" />
-              </div>
-            ) : (
-              <ProjectsGrid projects={filteredProjects} />
-            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+              <Link href="/turma-1c">
+                <Card className="overflow-visible hover-elevate transition-all duration-300 cursor-pointer group" data-testid="card-turma-1c">
+                  <CardContent className="p-0">
+                    <div className="bg-gradient-to-br from-chart-1/20 via-chart-3/10 to-transparent p-6 md:p-8 rounded-t-lg">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-4">
+                          <Badge className="bg-chart-1/20 text-chart-1 border-0">
+                            Turma 1C
+                          </Badge>
+                          <h3 className="text-xl md:text-2xl font-bold text-foreground">
+                            Projetos Turma 1C
+                          </h3>
+                          <p className="text-muted-foreground text-sm md:text-base">
+                            Sistemas, agendas e mapas interativos
+                          </p>
+                        </div>
+                        <div className="w-16 h-16 rounded-full bg-chart-1/10 flex items-center justify-center">
+                          <Code className="w-8 h-8 text-chart-1" />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="p-6 space-y-4">
+                      <div className="flex flex-wrap gap-4">
+                        <div className="flex items-center gap-2 text-sm">
+                          <Code className="w-4 h-4 text-muted-foreground" />
+                          <span className="font-medium">{projects1C.length}</span>
+                          <span className="text-muted-foreground">projetos</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <Users className="w-4 h-4 text-muted-foreground" />
+                          <span className="font-medium">{students1C}</span>
+                          <span className="text-muted-foreground">alunos</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline" className="gap-1 text-xs">
+                          <Code className="w-3 h-3" /> Sistema
+                        </Badge>
+                        <Badge variant="outline" className="gap-1 text-xs">
+                          <Calendar className="w-3 h-3" /> Agenda
+                        </Badge>
+                        <Badge variant="outline" className="gap-1 text-xs">
+                          <Map className="w-3 h-3" /> Mapas
+                        </Badge>
+                      </div>
+                      
+                      <Button className="w-full gap-2 group-hover:gap-3 transition-all">
+                        Ver Projetos
+                        <ArrowRight className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+              
+              <Link href="/turma-2c">
+                <Card className="overflow-visible hover-elevate transition-all duration-300 cursor-pointer group" data-testid="card-turma-2c">
+                  <CardContent className="p-0">
+                    <div className="bg-gradient-to-br from-chart-2/20 via-chart-4/10 to-transparent p-6 md:p-8 rounded-t-lg">
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-4">
+                          <Badge className="bg-chart-2/20 text-chart-2 border-0">
+                            Turma 2C
+                          </Badge>
+                          <h3 className="text-xl md:text-2xl font-bold text-foreground">
+                            Projetos Turma 2C
+                          </h3>
+                          <p className="text-muted-foreground text-sm md:text-base">
+                            Hortas escolares e sustentabilidade
+                          </p>
+                        </div>
+                        <div className="w-16 h-16 rounded-full bg-chart-2/10 flex items-center justify-center">
+                          <Leaf className="w-8 h-8 text-chart-2" />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="p-6 space-y-4">
+                      <div className="flex flex-wrap gap-4">
+                        <div className="flex items-center gap-2 text-sm">
+                          <Leaf className="w-4 h-4 text-muted-foreground" />
+                          <span className="font-medium">{projects2C.length}</span>
+                          <span className="text-muted-foreground">projetos</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm">
+                          <Users className="w-4 h-4 text-muted-foreground" />
+                          <span className="font-medium">{students2C}</span>
+                          <span className="text-muted-foreground">alunos</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="outline" className="gap-1 text-xs">
+                          <Leaf className="w-3 h-3" /> Horta
+                        </Badge>
+                        <Badge variant="outline" className="gap-1 text-xs">
+                          <Leaf className="w-3 h-3" /> Sustentabilidade
+                        </Badge>
+                      </div>
+                      
+                      <Button className="w-full gap-2 group-hover:gap-3 transition-all">
+                        Ver Projetos
+                        <ArrowRight className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            </div>
           </div>
         </section>
       </main>

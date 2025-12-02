@@ -1,0 +1,98 @@
+import { useMemo } from 'react';
+import Header from '@/components/Header';
+import ProjectsGrid from '@/components/ProjectsGrid';
+import Footer from '@/components/Footer';
+import { projectsData } from '@/lib/projectsData';
+import { Badge } from '@/components/ui/badge';
+import { Users, Code, Calendar, Map } from 'lucide-react';
+
+export default function Turma1C() {
+  const projects = useMemo(() => 
+    projectsData.filter(p => p.turma === '1C'), 
+  []);
+
+  const totalStudents = useMemo(() => {
+    const allStudents = new Set<string>();
+    projects.forEach(p => p.students.forEach(s => allStudents.add(s)));
+    return allStudents.size;
+  }, [projects]);
+
+  const categories = useMemo(() => {
+    const cats = new Set<string>();
+    projects.forEach(p => cats.add(p.category));
+    return Array.from(cats);
+  }, [projects]);
+
+  return (
+    <div className="min-h-screen bg-background flex flex-col" data-testid="page-turma-1c">
+      <Header />
+      
+      <main className="flex-1">
+        <section className="bg-gradient-to-br from-chart-1/10 via-background to-chart-3/10 py-12 md:py-16">
+          <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+            <div className="space-y-6">
+              <Badge variant="secondary" className="text-sm" data-testid="badge-turma">
+                Turma 1C
+              </Badge>
+              
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground" data-testid="text-turma-title">
+                Projetos da Turma 1C
+              </h1>
+              
+              <p className="text-muted-foreground text-base md:text-lg max-w-2xl">
+                Projetos desenvolvidos pelos alunos da turma 1C, incluindo sistemas, agendas e mapas interativos.
+              </p>
+              
+              <div className="flex flex-wrap gap-4 md:gap-6 pt-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-full bg-chart-1/20 flex items-center justify-center">
+                    <Code className="w-5 h-5 text-chart-1" />
+                  </div>
+                  <div>
+                    <div className="text-xl font-bold text-foreground" data-testid="text-project-count">{projects.length}</div>
+                    <div className="text-sm text-muted-foreground">Projetos</div>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-full bg-chart-3/20 flex items-center justify-center">
+                    <Users className="w-5 h-5 text-chart-3" />
+                  </div>
+                  <div>
+                    <div className="text-xl font-bold text-foreground" data-testid="text-student-count">{totalStudents}</div>
+                    <div className="text-sm text-muted-foreground">Alunos</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex flex-wrap gap-2 pt-2">
+                {categories.map((cat) => {
+                  const icons: Record<string, typeof Code> = {
+                    'Sistema': Code,
+                    'Agenda': Calendar,
+                    'Mapas': Map,
+                  };
+                  const Icon = icons[cat] || Code;
+                  return (
+                    <Badge key={cat} variant="outline" className="gap-1.5">
+                      <Icon className="w-3 h-3" />
+                      {cat}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <section className="py-12 md:py-16" data-testid="section-projects-1c">
+          <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+            <ProjectsGrid projects={projects} />
+          </div>
+        </section>
+      </main>
+      
+      <Footer />
+    </div>
+  );
+}
