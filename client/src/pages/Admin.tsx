@@ -32,33 +32,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { 
   Plus, 
-  Pencil, 
-  Trash2, 
   Users, 
   FolderOpen, 
   Settings,
-  X,
   ExternalLink,
   Github,
   Video,
   Presentation,
-  Globe
+  Globe,
+  ImageIcon
 } from 'lucide-react';
 import type { Turma, Projeto } from '@shared/schema';
 
@@ -88,8 +75,6 @@ export default function Admin() {
   const { toast } = useToast();
   const [turmaDialogOpen, setTurmaDialogOpen] = useState(false);
   const [projetoDialogOpen, setProjetoDialogOpen] = useState(false);
-  const [editingTurma, setEditingTurma] = useState<Turma | null>(null);
-  const [editingProjeto, setEditingProjeto] = useState<Projeto | null>(null);
 
   // Queries
   const { data: turmas = [], isLoading: loadingTurmas } = useQuery<Turma[]>({
@@ -141,34 +126,6 @@ export default function Admin() {
     },
   });
 
-  const updateTurmaMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: TurmaFormData }) => {
-      return apiRequest('PATCH', `/api/turmas/${id}`, data);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/turmas'] });
-      setTurmaDialogOpen(false);
-      setEditingTurma(null);
-      turmaForm.reset();
-      toast({ title: 'Turma atualizada com sucesso!' });
-    },
-    onError: () => {
-      toast({ title: 'Erro ao atualizar turma', variant: 'destructive' });
-    },
-  });
-
-  const deleteTurmaMutation = useMutation({
-    mutationFn: async (id: number) => {
-      return apiRequest('DELETE', `/api/turmas/${id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/turmas'] });
-      toast({ title: 'Turma excluída com sucesso!' });
-    },
-    onError: () => {
-      toast({ title: 'Erro ao excluir turma', variant: 'destructive' });
-    },
-  });
 
   // Mutations - Projetos
   const createProjetoMutation = useMutation({
@@ -194,99 +151,28 @@ export default function Admin() {
     },
   });
 
-  const updateProjetoMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: ProjetoFormData }) => {
-      const payload = {
-        ...data,
-        alunos: data.alunos.split(',').map(a => a.trim()).filter(a => a),
-        linkCanva: data.linkCanva || null,
-        linkVideo: data.linkVideo || null,
-        linkGithub: data.linkGithub || null,
-        linkDemo: data.linkDemo || null,
-      };
-      return apiRequest('PATCH', `/api/projetos/${id}`, payload);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/projetos'] });
-      setProjetoDialogOpen(false);
-      setEditingProjeto(null);
-      projetoForm.reset();
-      toast({ title: 'Projeto atualizado com sucesso!' });
-    },
-    onError: () => {
-      toast({ title: 'Erro ao atualizar projeto', variant: 'destructive' });
-    },
-  });
-
-  const deleteProjetoMutation = useMutation({
-    mutationFn: async (id: number) => {
-      return apiRequest('DELETE', `/api/projetos/${id}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/projetos'] });
-      toast({ title: 'Projeto excluído com sucesso!' });
-    },
-    onError: () => {
-      toast({ title: 'Erro ao excluir projeto', variant: 'destructive' });
-    },
-  });
-
   // Handlers
-  const handleEditTurma = (turma: Turma) => {
-    setEditingTurma(turma);
-    turmaForm.reset({
-      nome: turma.nome,
-      descricao: turma.descricao || '',
-    });
-    setTurmaDialogOpen(true);
-  };
-
-  const handleEditProjeto = (projeto: Projeto) => {
-    setEditingProjeto(projeto);
-    projetoForm.reset({
-      titulo: projeto.titulo,
-      descricao: projeto.descricao || '',
-      categoria: projeto.categoria,
-      alunos: projeto.alunos.join(', '),
-      turmaId: projeto.turmaId,
-      linkCanva: projeto.linkCanva || '',
-      linkVideo: projeto.linkVideo || '',
-      linkGithub: projeto.linkGithub || '',
-      linkDemo: projeto.linkDemo || '',
-    });
-    setProjetoDialogOpen(true);
-  };
-
   const onSubmitTurma = (data: TurmaFormData) => {
-    if (editingTurma) {
-      updateTurmaMutation.mutate({ id: editingTurma.id, data });
-    } else {
-      createTurmaMutation.mutate(data);
-    }
+    createTurmaMutation.mutate(data);
   };
 
   const onSubmitProjeto = (data: ProjetoFormData) => {
-    if (editingProjeto) {
-      updateProjetoMutation.mutate({ id: editingProjeto.id, data });
-    } else {
-      createProjetoMutation.mutate(data);
-    }
+    createProjetoMutation.mutate(data);
   };
 
   const openNewTurmaDialog = () => {
-    setEditingTurma(null);
     turmaForm.reset({ nome: '', descricao: '' });
     setTurmaDialogOpen(true);
   };
 
   const openNewProjetoDialog = () => {
-    setEditingProjeto(null);
     projetoForm.reset({
       titulo: '',
       descricao: '',
       categoria: '',
       alunos: '',
       turmaId: 0,
+      imagemUrl: '',
       linkCanva: '',
       linkVideo: '',
       linkGithub: '',
@@ -422,55 +308,14 @@ export default function Admin() {
                     return (
                       <Card key={turma.id} data-testid={`card-turma-${turma.id}`}>
                         <CardHeader className="pb-2">
-                          <div className="flex items-start justify-between gap-2">
-                            <div>
-                              <CardTitle className="flex items-center gap-2">
-                                <Badge variant="secondary">{turma.nome}</Badge>
-                              </CardTitle>
-                              {turma.descricao && (
-                                <CardDescription className="mt-2">
-                                  {turma.descricao}
-                                </CardDescription>
-                              )}
-                            </div>
-                            <div className="flex gap-1">
-                              <Button 
-                                variant="ghost" 
-                                size="icon"
-                                onClick={() => handleEditTurma(turma)}
-                                data-testid={`button-edit-turma-${turma.id}`}
-                              >
-                                <Pencil className="w-4 h-4" />
-                              </Button>
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="icon"
-                                    data-testid={`button-delete-turma-${turma.id}`}
-                                  >
-                                    <Trash2 className="w-4 h-4 text-destructive" />
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>Excluir turma?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      Esta ação não pode ser desfeita. Todos os projetos desta turma também serão afetados.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                    <AlertDialogAction
-                                      onClick={() => deleteTurmaMutation.mutate(turma.id)}
-                                    >
-                                      Excluir
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            </div>
-                          </div>
+                          <CardTitle className="flex items-center gap-2">
+                            <Badge variant="secondary">{turma.nome}</Badge>
+                          </CardTitle>
+                          {turma.descricao && (
+                            <CardDescription className="mt-2">
+                              {turma.descricao}
+                            </CardDescription>
+                          )}
                         </CardHeader>
                         <CardContent>
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -725,55 +570,16 @@ export default function Admin() {
                   {projetos.map((projeto) => (
                     <Card key={projeto.id} data-testid={`card-projeto-${projeto.id}`}>
                       <CardHeader className="pb-2">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="space-y-1 flex-1 min-w-0">
-                            <Badge variant="outline" className="text-xs">
-                              {getTurmaName(projeto.turmaId)}
-                            </Badge>
-                            <CardTitle className="text-base truncate">
-                              {projeto.titulo}
-                            </CardTitle>
-                            <Badge variant="secondary" className="text-xs">
-                              {projeto.categoria}
-                            </Badge>
-                          </div>
-                          <div className="flex gap-1 shrink-0">
-                            <Button 
-                              variant="ghost" 
-                              size="icon"
-                              onClick={() => handleEditProjeto(projeto)}
-                              data-testid={`button-edit-projeto-${projeto.id}`}
-                            >
-                              <Pencil className="w-4 h-4" />
-                            </Button>
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <Button 
-                                  variant="ghost" 
-                                  size="icon"
-                                  data-testid={`button-delete-projeto-${projeto.id}`}
-                                >
-                                  <Trash2 className="w-4 h-4 text-destructive" />
-                                </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Excluir projeto?</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    Esta ação não pode ser desfeita.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                  <AlertDialogAction
-                                    onClick={() => deleteProjetoMutation.mutate(projeto.id)}
-                                  >
-                                    Excluir
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
-                          </div>
+                        <div className="space-y-1">
+                          <Badge variant="outline" className="text-xs">
+                            {getTurmaName(projeto.turmaId)}
+                          </Badge>
+                          <CardTitle className="text-base truncate">
+                            {projeto.titulo}
+                          </CardTitle>
+                          <Badge variant="secondary" className="text-xs">
+                            {projeto.categoria}
+                          </Badge>
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-3">
