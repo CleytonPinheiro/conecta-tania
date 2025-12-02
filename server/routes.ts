@@ -17,6 +17,7 @@ export async function registerRoutes(
       const turmas = await storage.getTurmas();
       res.json(turmas);
     } catch (error) {
+      console.error("Error fetching turmas:", error);
       res.status(500).json({ error: "Erro ao buscar turmas" });
     }
   });
@@ -42,6 +43,7 @@ export async function registerRoutes(
       const turma = await storage.createTurma(data);
       res.status(201).json(turma);
     } catch (error) {
+      console.error("Error creating turma:", error);
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: error.errors });
       }
@@ -86,6 +88,7 @@ export async function registerRoutes(
       const projetos = await storage.getProjetos();
       res.json(projetos);
     } catch (error) {
+      console.error("Error fetching projetos:", error);
       res.status(500).json({ error: "Erro ao buscar projetos" });
     }
   });

@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, serial } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, serial, integer } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -35,7 +35,7 @@ export const projetos = pgTable("projetos", {
   descricao: text("descricao"),
   categoria: text("categoria").notNull(),
   alunos: text("alunos").array().notNull(),
-  turmaId: serial("turma_id").references(() => turmas.id),
+  turmaId: integer("turma_id").notNull().references(() => turmas.id),
   linkCanva: text("link_canva"),
   linkVideo: text("link_video"),
   linkGithub: text("link_github"),
