@@ -230,9 +230,7 @@ export default function Admin() {
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>
-                        {editingTurma ? 'Editar Turma' : 'Nova Turma'}
-                      </DialogTitle>
+                      <DialogTitle>Nova Turma</DialogTitle>
                     </DialogHeader>
                     <Form {...turmaForm}>
                       <form onSubmit={turmaForm.handleSubmit(onSubmitTurma)} className="space-y-4">
@@ -276,10 +274,10 @@ export default function Admin() {
                           </Button>
                           <Button 
                             type="submit" 
-                            disabled={createTurmaMutation.isPending || updateTurmaMutation.isPending}
+                            disabled={createTurmaMutation.isPending}
                             data-testid="button-save-turma"
                           >
-                            {editingTurma ? 'Salvar' : 'Criar'}
+                            Criar
                           </Button>
                         </div>
                       </form>
@@ -348,9 +346,7 @@ export default function Admin() {
                   </DialogTrigger>
                   <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
-                      <DialogTitle>
-                        {editingProjeto ? 'Editar Projeto' : 'Novo Projeto'}
-                      </DialogTitle>
+                      <DialogTitle>Novo Projeto</DialogTitle>
                     </DialogHeader>
                     <Form {...projetoForm}>
                       <form onSubmit={projetoForm.handleSubmit(onSubmitProjeto)} className="space-y-4">
@@ -530,10 +526,10 @@ export default function Admin() {
                           </Button>
                           <Button 
                             type="submit" 
-                            disabled={createProjetoMutation.isPending || updateProjetoMutation.isPending}
+                            disabled={createProjetoMutation.isPending}
                             data-testid="button-save-projeto"
                           >
-                            {editingProjeto ? 'Salvar' : 'Criar'}
+                            Criar
                           </Button>
                         </div>
                       </form>

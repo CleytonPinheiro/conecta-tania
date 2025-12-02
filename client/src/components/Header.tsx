@@ -7,6 +7,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { useState } from 'react';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const navItems = [
   { href: '/', label: 'Início', icon: Home },
