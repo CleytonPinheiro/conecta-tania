@@ -27,12 +27,12 @@ export default function Header() {
               <GraduationCap className="w-5 h-5 md:w-6 md:h-6 text-primary" />
             </div>
             <div>
-              <h1 className="text-base md:text-lg font-semibold text-foreground leading-tight" data-testid="text-school-name">
-                Colégio Estadual Tânia Varella
+              <h1 className="text-base md:text-lg font-bold text-foreground leading-tight" data-testid="text-project-name">
+                Conecta Tânia
               </h1>
               <div className="flex items-center gap-1 text-muted-foreground text-xs md:text-sm">
                 <MapPin className="w-3 h-3" />
-                <span data-testid="text-location">Maringá - PR</span>
+                <span data-testid="text-location">CETV - Maringá, PR</span>
               </div>
             </div>
           </Link>

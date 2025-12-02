@@ -1,5 +1,6 @@
-import { ChevronDown, Users, Code, Leaf } from 'lucide-react';
+import { ChevronDown, Users, Code, Leaf, GraduationCap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 type HeroProps = {
   totalProjects: number;
@@ -12,14 +13,18 @@ export default function Hero({ totalProjects, totalStudents, onScrollToProjects 
     <section className="relative bg-gradient-to-br from-primary/10 via-background to-accent/10 py-16 md:py-24" data-testid="hero-section">
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         <div className="text-center space-y-6">
-          <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium">
-            <Code className="w-4 h-4" />
-            <span>Projetos de Programação 2024</span>
-          </div>
+          <Badge variant="outline" className="gap-2 px-4 py-2">
+            <GraduationCap className="w-4 h-4" />
+            Colégio Estadual Tânia Varella
+          </Badge>
           
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight" data-testid="text-hero-title">
-            Trabalhos dos Alunos
+            Conecta Tânia
           </h2>
+          
+          <p className="text-primary font-semibold text-base md:text-lg" data-testid="text-course-name">
+            Curso Desenvolvimento de Sistemas
+          </p>
           
           <p className="text-muted-foreground text-base md:text-lg max-w-2xl mx-auto" data-testid="text-hero-subtitle">
             Conheça os projetos desenvolvidos pelos nossos alunos nas disciplinas de tecnologia. 

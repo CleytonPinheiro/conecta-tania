@@ -1,4 +1,4 @@
-import { GraduationCap, Heart, MapPin } from 'lucide-react';
+import { GraduationCap, Heart, MapPin, Code } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -12,19 +12,23 @@ export default function Footer() {
               <GraduationCap className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h4 className="font-semibold text-foreground" data-testid="text-footer-school">
-                Colégio Estadual Tânia Varella
+              <h4 className="font-bold text-foreground" data-testid="text-footer-project">
+                Conecta Tânia
               </h4>
               <div className="flex items-center gap-1 text-muted-foreground text-sm">
                 <MapPin className="w-3 h-3" />
-                <span>Maringá - PR</span>
+                <span>Colégio Estadual Tânia Varella - Maringá, PR</span>
               </div>
             </div>
           </div>
           
           <div className="text-center md:text-right">
-            <p className="text-sm text-muted-foreground" data-testid="text-footer-credits">
-              Projetos desenvolvidos pelos alunos das turmas 1C e 2C
+            <p className="text-sm text-muted-foreground flex items-center justify-center md:justify-end gap-1.5" data-testid="text-footer-course">
+              <Code className="w-3.5 h-3.5" />
+              Curso Desenvolvimento de Sistemas
+            </p>
+            <p className="text-sm text-muted-foreground mt-1" data-testid="text-footer-credits">
+              Projetos das turmas 1C e 2C
             </p>
             <p className="text-sm text-muted-foreground flex items-center justify-center md:justify-end gap-1 mt-1">
               Feito com <Heart className="w-3.5 h-3.5 text-chart-5 fill-chart-5" /> em {currentYear}
