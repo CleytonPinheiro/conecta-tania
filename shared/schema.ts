@@ -36,6 +36,7 @@ export const projetos = pgTable("projetos", {
   categoria: text("categoria").notNull(),
   alunos: text("alunos").array().notNull(),
   turmaId: integer("turma_id").notNull().references(() => turmas.id),
+  imagemUrl: text("imagem_url"),
   linkCanva: text("link_canva"),
   linkVideo: text("link_video"),
   linkGithub: text("link_github"),

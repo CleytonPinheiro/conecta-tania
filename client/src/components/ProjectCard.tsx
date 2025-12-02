@@ -152,11 +152,20 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Card className="overflow-visible hover-elevate transition-all duration-300" data-testid={`card-project-${project.id}`}>
       <CardContent className="p-0">
-        <div className="relative aspect-video bg-gradient-to-br from-muted/50 to-muted flex items-center justify-center rounded-t-lg">
-          <div className="flex flex-col items-center gap-2 text-muted-foreground">
-            <CategoryIcon className="w-12 h-12 opacity-50" />
-            <span className="text-sm font-medium">{project.category}</span>
-          </div>
+        <div className="relative aspect-video bg-gradient-to-br from-muted/50 to-muted flex items-center justify-center rounded-t-lg overflow-hidden">
+          {project.imagemUrl ? (
+            <img 
+              src={project.imagemUrl} 
+              alt={`Screenshot do projeto ${project.title}`}
+              className="w-full h-full object-cover"
+              data-testid={`img-project-${project.id}`}
+            />
+          ) : (
+            <div className="flex flex-col items-center gap-2 text-muted-foreground">
+              <CategoryIcon className="w-12 h-12 opacity-50" />
+              <span className="text-sm font-medium">{project.category}</span>
+            </div>
+          )}
           <Badge 
             className={`absolute top-3 right-3 ${categoryColor} border-0`}
             data-testid={`badge-turma-${project.id}`}

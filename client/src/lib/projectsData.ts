@@ -19,6 +19,7 @@ export type Project = {
   category: string;
   links: ProjectLink[] | ProjectLinks;
   description?: string;
+  imagemUrl?: string;
 };
 
 export const projectsData: Project[] = [
