@@ -74,6 +74,7 @@ const projetoFormSchema = z.object({
   categoria: z.string().min(1, 'Categoria é obrigatória'),
   alunos: z.string().min(1, 'Informe pelo menos um aluno'),
   turmaId: z.number().min(1, 'Selecione uma turma'),
+  imagemUrl: z.string().optional(),
   linkCanva: z.string().optional(),
   linkVideo: z.string().optional(),
   linkGithub: z.string().optional(),
