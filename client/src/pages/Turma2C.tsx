@@ -1,21 +1,50 @@
 import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import Header from '@/components/Header';
 import ProjectsGrid from '@/components/ProjectsGrid';
 import Footer from '@/components/Footer';
-import { projectsData } from '@/lib/projectsData';
 import { Badge } from '@/components/ui/badge';
-import { Users, Leaf } from 'lucide-react';
+import { Users, Leaf, Loader2 } from 'lucide-react';
+import type { Turma, Projeto } from '@shared/schema';
 
 export default function Turma2C() {
+  const { data: turmas = [] } = useQuery<Turma[]>({
+    queryKey: ['/api/turmas'],
+  });
+
+  const { data: allProjetos = [], isLoading } = useQuery<Projeto[]>({
+    queryKey: ['/api/projetos'],
+  });
+
+  const turma2C = turmas.find(t => t.nome === '2C');
+  
   const projects = useMemo(() => 
-    projectsData.filter(p => p.turma === '2C'), 
-  []);
+    turma2C ? allProjetos.filter(p => p.turmaId === turma2C.id) : [], 
+  [allProjetos, turma2C]);
 
   const totalStudents = useMemo(() => {
     const allStudents = new Set<string>();
-    projects.forEach(p => p.students.forEach(s => allStudents.add(s)));
+    projects.forEach(p => p.alunos.forEach(s => allStudents.add(s)));
     return allStudents.size;
   }, [projects]);
+
+  // Convert database projects to ProjectCard format
+  const formattedProjects = useMemo(() => 
+    projects.map(p => ({
+      id: p.id.toString(),
+      title: p.titulo,
+      description: p.descricao || '',
+      students: p.alunos,
+      category: p.categoria,
+      turma: '2C',
+      links: {
+        canva: p.linkCanva || undefined,
+        video: p.linkVideo || undefined,
+        github: p.linkGithub || undefined,
+        demo: p.linkDemo || undefined,
+      }
+    })),
+  [projects]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col" data-testid="page-turma-2c">
@@ -75,7 +104,17 @@ export default function Turma2C() {
         
         <section className="py-12 md:py-16" data-testid="section-projects-2c">
           <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-            <ProjectsGrid projects={projects} />
+            {isLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+              </div>
+            ) : formattedProjects.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground">
+                Nenhum projeto cadastrado para esta turma ainda.
+              </div>
+            ) : (
+              <ProjectsGrid projects={formattedProjects} />
+            )}
           </div>
         </section>
       </main>

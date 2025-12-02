@@ -1,9 +1,9 @@
-import { ExternalLink, Github, Globe, Code, Leaf, Calendar, Map, Users } from 'lucide-react';
+import { ExternalLink, Github, Globe, Code, Leaf, Calendar, Map, Users, Video, Presentation } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import type { Project, ProjectLink } from '@/lib/projectsData';
+import type { Project, ProjectLink, ProjectLinks } from '@/lib/projectsData';
 
 type ProjectCardProps = {
   project: Project;
@@ -70,9 +70,84 @@ function getLinkVariant(type: ProjectLink['type']): 'default' | 'outline' | 'sec
   }
 }
 
+function isProjectLinkArray(links: ProjectLink[] | ProjectLinks): links is ProjectLink[] {
+  return Array.isArray(links);
+}
+
 export default function ProjectCard({ project }: ProjectCardProps) {
   const CategoryIcon = categoryIcons[project.category] || Code;
   const categoryColor = categoryColors[project.category] || 'bg-muted text-muted-foreground';
+
+  const renderLinks = () => {
+    if (isProjectLinkArray(project.links)) {
+      return project.links.map((link, index) => {
+        const LinkIcon = getLinkIcon(link.type);
+        return (
+          <Button
+            key={index}
+            variant={getLinkVariant(link.type)}
+            size="sm"
+            asChild
+            data-testid={`link-${project.id}-${link.type}-${index}`}
+          >
+            <a href={link.url} target="_blank" rel="noopener noreferrer" className="gap-1.5">
+              <LinkIcon className="w-3.5 h-3.5" />
+              {link.label}
+            </a>
+          </Button>
+        );
+      });
+    } else {
+      const links = project.links;
+      const linkButtons = [];
+      
+      if (links.canva) {
+        linkButtons.push(
+          <Button key="canva" variant="default" size="sm" asChild data-testid={`link-${project.id}-canva`}>
+            <a href={links.canva} target="_blank" rel="noopener noreferrer" className="gap-1.5">
+              <Presentation className="w-3.5 h-3.5" />
+              Canva
+            </a>
+          </Button>
+        );
+      }
+      
+      if (links.video) {
+        linkButtons.push(
+          <Button key="video" variant="secondary" size="sm" asChild data-testid={`link-${project.id}-video`}>
+            <a href={links.video} target="_blank" rel="noopener noreferrer" className="gap-1.5">
+              <Video className="w-3.5 h-3.5" />
+              Video
+            </a>
+          </Button>
+        );
+      }
+      
+      if (links.github) {
+        linkButtons.push(
+          <Button key="github" variant="outline" size="sm" asChild data-testid={`link-${project.id}-github`}>
+            <a href={links.github} target="_blank" rel="noopener noreferrer" className="gap-1.5">
+              <Github className="w-3.5 h-3.5" />
+              GitHub
+            </a>
+          </Button>
+        );
+      }
+      
+      if (links.demo) {
+        linkButtons.push(
+          <Button key="demo" variant="secondary" size="sm" asChild data-testid={`link-${project.id}-demo`}>
+            <a href={links.demo} target="_blank" rel="noopener noreferrer" className="gap-1.5">
+              <Globe className="w-3.5 h-3.5" />
+              Demo
+            </a>
+          </Button>
+        );
+      }
+      
+      return linkButtons;
+    }
+  };
 
   return (
     <Card className="overflow-visible hover-elevate transition-all duration-300" data-testid={`card-project-${project.id}`}>
@@ -126,23 +201,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           </div>
           
           <div className="flex flex-wrap gap-2 pt-2">
-            {project.links.map((link, index) => {
-              const LinkIcon = getLinkIcon(link.type);
-              return (
-                <Button
-                  key={index}
-                  variant={getLinkVariant(link.type)}
-                  size="sm"
-                  asChild
-                  data-testid={`link-${project.id}-${link.type}-${index}`}
-                >
-                  <a href={link.url} target="_blank" rel="noopener noreferrer" className="gap-1.5">
-                    <LinkIcon className="w-3.5 h-3.5" />
-                    {link.label}
-                  </a>
-                </Button>
-              );
-            })}
+            {renderLinks()}
           </div>
         </div>
       </CardContent>

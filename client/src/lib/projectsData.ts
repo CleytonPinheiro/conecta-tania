@@ -4,13 +4,20 @@ export type ProjectLink = {
   label: string;
 };
 
+export type ProjectLinks = {
+  canva?: string;
+  video?: string;
+  github?: string;
+  demo?: string;
+};
+
 export type Project = {
   id: string;
   title: string;
   students: string[];
-  turma: '1C' | '2C';
+  turma: string;
   category: string;
-  links: ProjectLink[];
+  links: ProjectLink[] | ProjectLinks;
   description?: string;
 };
 
