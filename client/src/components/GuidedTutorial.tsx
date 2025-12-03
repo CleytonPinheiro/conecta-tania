@@ -128,7 +128,7 @@ export default function GuidedTutorial() {
     return (
       <button
         onClick={handleRestart}
-        className="fixed bottom-6 right-6 z-40 p-3 rounded-full bg-primary text-primary-foreground shadow-lg hover-elevate transition-all"
+        className="fixed top-1/2 right-6 -translate-y-1/2 z-40 p-3 rounded-full bg-primary text-primary-foreground shadow-lg hover-elevate transition-all"
         title="Iniciar tutorial"
         data-testid="button-start-tutorial"
       >
