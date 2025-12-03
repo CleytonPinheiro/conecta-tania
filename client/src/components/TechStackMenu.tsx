@@ -7,6 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
 type TechItem = {
@@ -68,15 +69,17 @@ const techStack: TechCategory[] = [
 export function TechStackMenu() {
   return (
     <DropdownMenu>
-      <Button
-        variant="ghost"
-        size="sm"
-        className="gap-2 hidden md:flex"
-        data-testid="button-tech-stack"
-      >
-        <Code2 className="w-4 h-4" />
-        <span className="hidden lg:inline">Tech</span>
-      </Button>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-2 hidden md:flex"
+          data-testid="button-tech-stack"
+        >
+          <Code2 className="w-4 h-4" />
+          <span className="hidden lg:inline">Tech</span>
+        </Button>
+      </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-80" data-testid="tech-stack-menu">
         <DropdownMenuLabel className="text-base font-bold" data-testid="tech-stack-title">
