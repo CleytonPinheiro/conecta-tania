@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/sheet';
 import { useState } from 'react';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { TechStackMenu } from '@/components/TechStackMenu';
 
 const navItems = [
   { href: '/', label: 'Início', icon: Home },
@@ -57,6 +58,7 @@ export default function Header() {
                 </Link>
               );
             })}
+            <TechStackMenu />
             <ThemeToggle />
           </nav>
 
@@ -84,7 +86,15 @@ export default function Header() {
                     </Link>
                   );
                 })}
-                <div className="pt-4 border-t mt-4">
+                <div className="pt-4 border-t mt-4 space-y-3">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-3"
+                    onClick={() => setMobileMenuOpen(false)}
+                    data-testid="nav-mobile-tech-stack"
+                  >
+                    📚 Tech Stack
+                  </Button>
                   <div className="flex items-center justify-between px-4">
                     <span className="text-sm text-muted-foreground">Tema</span>
                     <ThemeToggle />
