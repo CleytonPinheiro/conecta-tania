@@ -18,29 +18,31 @@ try {
   });
   console.log('✅ Frontend build complete\n');
 
-  // Step 2: Create production server entry
-  console.log('🔧 Creating production server entry...');
+  // Step 2: Build backend with esbuild
+  console.log('🔧 Building backend with esbuild...');
   
-  const distDir = path.join(rootDir, 'dist');
-  fs.mkdirSync(distDir, { recursive: true });
+  // Build server code excluding vite config and dev dependencies
+  execSync(
+    'npx esbuild server/index.ts ' +
+    '--bundle ' +
+    '--platform=node ' +
+    '--target=node20 ' +
+    '--format=cjs ' +
+    '--packages=external ' +
+    '--external:vite ' +
+    '--external:@vitejs/* ' +
+    '--external:@replit/* ' +
+    '--external:@tailwindcss/* ' +
+    '--external:./vite.config.ts ' +
+    '--external:../vite.config.ts ' +
+    '--outfile=dist/index.cjs',
+    {
+      cwd: rootDir,
+      stdio: 'inherit'
+    }
+  );
   
-  // Simple production wrapper - just import and run the server
-  const productionEntry = `const path = require('path');
-const rootDir = path.dirname(__dirname);
-
-// Set up tsx to handle TypeScript
-require('tsx');
-
-// Import and start the server
-import(path.join(rootDir, 'server/index.ts')).catch(err => {
-  console.error('Failed to start server:', err);
-  process.exit(1);
-});
-`;
-  
-  fs.writeFileSync(path.join(distDir, 'index.cjs'), productionEntry);
-  
-  console.log('✅ Production entry created\n');
+  console.log('✅ Backend build complete\n');
   console.log('✨ Build successful! Ready for deployment.\n');
 } catch (error) {
   console.error('❌ Build failed:', error);
