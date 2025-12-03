@@ -161,5 +161,15 @@ export async function registerRoutes(
     }
   });
 
+  // Get config (author info)
+  app.get("/api/config", (req, res) => {
+    res.json({
+      author: {
+        name: process.env.VITE_AUTHOR_NAME || "Autor",
+        linkedin: process.env.VITE_AUTHOR_LINKEDIN || "",
+      },
+    });
+  });
+
   return httpServer;
 }

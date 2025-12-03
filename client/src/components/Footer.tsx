@@ -1,9 +1,22 @@
 import { GraduationCap, Heart, MapPin, Code, Linkedin } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+
+type Config = {
+  author: {
+    name: string;
+    linkedin: string;
+  };
+};
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const authorName = import.meta.env.VITE_AUTHOR_NAME || 'Autor';
-  const authorLinkedin = import.meta.env.VITE_AUTHOR_LINKEDIN;
+  
+  const { data: config, isLoading } = useQuery<Config>({
+    queryKey: ['/api/config'],
+  });
+
+  const authorName = config?.author.name || 'Autor';
+  const authorLinkedin = config?.author.linkedin;
   
   return (
     <footer className="bg-card border-t border-card-border py-8 md:py-12" data-testid="footer">
