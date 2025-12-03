@@ -176,7 +176,7 @@ export default function Horta() {
           )}
 
           {/* Featured Presentation Video */}
-          <Card className="overflow-hidden border-2 border-primary/20" data-testid="card-apresentacao">
+          <Card className="overflow-hidden border-2 border-primary/20 max-w-4xl mx-auto" data-testid="card-apresentacao">
             <div className="relative w-full bg-black aspect-video flex items-center justify-center">
               <video
                 controls
