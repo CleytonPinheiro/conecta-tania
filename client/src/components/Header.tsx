@@ -1,4 +1,4 @@
-import { GraduationCap, MapPin, Home, Users, Menu, Settings } from 'lucide-react';
+import { GraduationCap, MapPin, Home, Users, Menu, Settings, Leaf } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,6 +13,7 @@ import { TechStackMenu } from '@/components/TechStackMenu';
 
 const navItems = [
   { href: '/', label: 'Início', icon: Home },
+  { href: '/horta', label: 'Horta', icon: Leaf },
   { href: '/turma-1c', label: 'Turma 1C', icon: Users },
   { href: '/turma-2c', label: 'Turma 2C', icon: Users },
   { href: '/admin', label: 'Admin', icon: Settings },

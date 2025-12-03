@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertTurmaSchema, insertProjetoSchema } from "@shared/schema";
+import { insertTurmaSchema, insertProjetoSchema, insertHortaMidiaSchema } from "@shared/schema";
 import { z } from "zod";
 import nodemailer from "nodemailer";
 
@@ -170,6 +170,77 @@ export async function registerRoutes(
         linkedin: process.env.VITE_AUTHOR_LINKEDIN || "",
       },
     });
+  });
+
+  // ============ HORTA MIDIAS ROUTES ============
+
+  // Get all horta midias
+  app.get("/api/horta-midias", async (req, res) => {
+    try {
+      const midias = await storage.getHortaMidias();
+      res.json(midias);
+    } catch (error) {
+      console.error("Error fetching horta midias:", error);
+      res.status(500).json({ error: "Erro ao buscar mídias" });
+    }
+  });
+
+  // Get horta midia by id
+  app.get("/api/horta-midias/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const midia = await storage.getHortaMidia(id);
+      if (!midia) {
+        return res.status(404).json({ error: "Mídia não encontrada" });
+      }
+      res.json(midia);
+    } catch (error) {
+      res.status(500).json({ error: "Erro ao buscar mídia" });
+    }
+  });
+
+  // Create horta midia
+  app.post("/api/horta-midias", async (req, res) => {
+    try {
+      const data = insertHortaMidiaSchema.parse(req.body);
+      const midia = await storage.createHortaMidia(data);
+      res.status(201).json(midia);
+    } catch (error) {
+      console.error("Error creating horta midia:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Erro ao criar mídia" });
+    }
+  });
+
+  // Update horta midia
+  app.patch("/api/horta-midias/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const data = insertHortaMidiaSchema.partial().parse(req.body);
+      const midia = await storage.updateHortaMidia(id, data);
+      if (!midia) {
+        return res.status(404).json({ error: "Mídia não encontrada" });
+      }
+      res.json(midia);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Erro ao atualizar mídia" });
+    }
+  });
+
+  // Delete horta midia
+  app.delete("/api/horta-midias/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteHortaMidia(id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: "Erro ao deletar mídia" });
+    }
   });
 
   // Send feedback

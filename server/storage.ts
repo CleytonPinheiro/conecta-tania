@@ -2,7 +2,8 @@ import {
   type User, type InsertUser,
   type Turma, type InsertTurma,
   type Projeto, type InsertProjeto,
-  users, turmas, projetos
+  type HortaMidia, type InsertHortaMidia,
+  users, turmas, projetos, hortaMidias
 } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
@@ -28,6 +29,13 @@ export interface IStorage {
   createProjeto(projeto: InsertProjeto): Promise<Projeto>;
   updateProjeto(id: number, projeto: Partial<InsertProjeto>): Promise<Projeto | undefined>;
   deleteProjeto(id: number): Promise<boolean>;
+
+  // Horta Midias
+  getHortaMidias(): Promise<HortaMidia[]>;
+  getHortaMidia(id: number): Promise<HortaMidia | undefined>;
+  createHortaMidia(midia: InsertHortaMidia): Promise<HortaMidia>;
+  updateHortaMidia(id: number, midia: Partial<InsertHortaMidia>): Promise<HortaMidia | undefined>;
+  deleteHortaMidia(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -103,6 +111,31 @@ export class DatabaseStorage implements IStorage {
 
   async deleteProjeto(id: number): Promise<boolean> {
     await db.delete(projetos).where(eq(projetos.id, id));
+    return true;
+  }
+
+  // Horta Midias
+  async getHortaMidias(): Promise<HortaMidia[]> {
+    return db.select().from(hortaMidias);
+  }
+
+  async getHortaMidia(id: number): Promise<HortaMidia | undefined> {
+    const [midia] = await db.select().from(hortaMidias).where(eq(hortaMidias.id, id));
+    return midia;
+  }
+
+  async createHortaMidia(midia: InsertHortaMidia): Promise<HortaMidia> {
+    const [newMidia] = await db.insert(hortaMidias).values(midia).returning();
+    return newMidia;
+  }
+
+  async updateHortaMidia(id: number, midia: Partial<InsertHortaMidia>): Promise<HortaMidia | undefined> {
+    const [updated] = await db.update(hortaMidias).set(midia).where(eq(hortaMidias.id, id)).returning();
+    return updated;
+  }
+
+  async deleteHortaMidia(id: number): Promise<boolean> {
+    await db.delete(hortaMidias).where(eq(hortaMidias.id, id));
     return true;
   }
 }

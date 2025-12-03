@@ -8,12 +8,14 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import Turma1C from "@/pages/Turma1C";
 import Turma2C from "@/pages/Turma2C";
+import Horta from "@/pages/Horta";
 import Admin from "@/pages/Admin";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/horta" component={Horta} />
       <Route path="/turma-1c" component={Turma1C} />
       <Route path="/turma-2c" component={Turma2C} />
       <Route path="/admin" component={Admin} />

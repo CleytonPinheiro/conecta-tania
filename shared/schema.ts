@@ -46,3 +46,17 @@ export const projetos = pgTable("projetos", {
 export const insertProjetoSchema = createInsertSchema(projetos).omit({ id: true });
 export type InsertProjeto = z.infer<typeof insertProjetoSchema>;
 export type Projeto = typeof projetos.$inferSelect;
+
+// Horta media table
+export const hortaMidias = pgTable("horta_midias", {
+  id: serial("id").primaryKey(),
+  titulo: text("titulo").notNull(),
+  descricao: text("descricao"),
+  tipo: text("tipo").notNull(), // 'video' ou 'foto'
+  url: text("url").notNull(),
+  thumbnailUrl: text("thumbnail_url"),
+});
+
+export const insertHortaMidiaSchema = createInsertSchema(hortaMidias).omit({ id: true });
+export type InsertHortaMidia = z.infer<typeof insertHortaMidiaSchema>;
+export type HortaMidia = typeof hortaMidias.$inferSelect;
