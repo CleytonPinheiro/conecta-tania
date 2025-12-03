@@ -1,8 +1,14 @@
-import { ExternalLink, Github, Globe, Code, Leaf, Calendar, Map, Users, Video, Presentation } from 'lucide-react';
+import { ExternalLink, Github, Globe, Code, Leaf, Calendar, Map, Users, Video, Presentation, Edit, ImageIcon, X } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { apiRequest } from '@/lib/queryClient';
+import { useToast } from '@/hooks/use-toast';
 import type { Project, ProjectLink, ProjectLinks } from '@/lib/projectsData';
 
 type ProjectCardProps = {
@@ -75,8 +81,57 @@ function isProjectLinkArray(links: ProjectLink[] | ProjectLinks): links is Proje
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editImagePreview, setEditImagePreview] = useState<string>('');
+  const [editDemoLink, setEditDemoLink] = useState<string>('');
+  
   const CategoryIcon = categoryIcons[project.category] || Code;
   const categoryColor = categoryColors[project.category] || 'bg-muted text-muted-foreground';
+  
+  const hasDemo = !isProjectLinkArray(project.links) && (project.links as ProjectLinks).demo;
+
+  const updateProjetoMutation = useMutation({
+    mutationFn: async (data: { imagemUrl?: string; linkDemo?: string }) => {
+      const projetoId = typeof project.id === 'string' ? parseInt(project.id.split('-')[0] + project.id.split('-')[1]) : project.id;
+      return apiRequest('PATCH', `/api/projetos/${projetoId}`, data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/projetos'] });
+      setEditDialogOpen(false);
+      setEditImagePreview('');
+      setEditDemoLink('');
+      toast({ title: 'Projeto atualizado com sucesso!' });
+    },
+    onError: () => {
+      toast({ title: 'Erro ao atualizar projeto', variant: 'destructive' });
+    },
+  });
+
+  const handleEditImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setEditImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSaveEdit = () => {
+    if (!editDemoLink && !editImagePreview) {
+      toast({ title: 'Digite um link Demo ou adicione uma imagem', variant: 'destructive' });
+      return;
+    }
+
+    const updateData: { imagemUrl?: string; linkDemo?: string } = {};
+    if (editImagePreview) updateData.imagemUrl = editImagePreview;
+    if (editDemoLink) updateData.linkDemo = editDemoLink;
+    
+    updateProjetoMutation.mutate(updateData);
+  };
 
   const getAvailableLinks = () => {
     if (isProjectLinkArray(project.links)) {
@@ -282,6 +337,92 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           <div className="flex flex-wrap gap-2 pt-2">
             {renderLinks()}
           </div>
+
+          {!hasDemo && (
+            <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+              <DialogTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full gap-2 mt-2"
+                  data-testid={`button-edit-${project.id}`}
+                >
+                  <Edit className="w-4 h-4" />
+                  Adicionar Screenshot e Demo
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Editar {project.title}</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium">Screenshot (opcional)</label>
+                    <label className="block">
+                      <div className="border-2 border-dashed border-border rounded-lg p-4 hover:border-primary/50 transition-colors cursor-pointer">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleEditImageChange}
+                          className="hidden"
+                        />
+                        <div className="text-center">
+                          <ImageIcon className="w-6 h-6 mx-auto mb-2 text-muted-foreground" />
+                          <p className="text-sm text-muted-foreground">Clique ou arraste uma imagem</p>
+                        </div>
+                      </div>
+                    </label>
+                    {editImagePreview && (
+                      <div className="relative rounded-lg overflow-hidden">
+                        <img 
+                          src={editImagePreview} 
+                          alt="Preview" 
+                          className="w-full h-40 object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setEditImagePreview('')}
+                          className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-md p-1"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium">Link Demo/Projeto</label>
+                    <Input
+                      placeholder="https://..."
+                      value={editDemoLink}
+                      onChange={(e) => setEditDemoLink(e.target.value)}
+                      data-testid={`input-edit-demo-${project.id}`}
+                    />
+                  </div>
+
+                  <div className="flex gap-2 pt-4">
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => setEditDialogOpen(false)}
+                      className="flex-1"
+                    >
+                      Cancelar
+                    </Button>
+                    <Button 
+                      type="button" 
+                      onClick={handleSaveEdit}
+                      disabled={updateProjetoMutation.isPending}
+                      className="flex-1"
+                      data-testid={`button-save-edit-${project.id}`}
+                    >
+                      Salvar
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
       </CardContent>
     </Card>
