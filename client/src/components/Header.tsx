@@ -19,13 +19,14 @@ import { TechStackMenu } from '@/components/TechStackMenu';
 const navItems = [
   { href: '/', label: 'Início', icon: Home },
   { href: '/horta', label: 'Horta', icon: Leaf },
-  { href: '/admin', label: 'Admin', icon: Settings },
 ];
 
 const turmaItems = [
   { href: '/turma-1c', label: 'Turma 1C' },
   { href: '/turma-2c', label: 'Turma 2C' },
 ];
+
+const adminItem = { href: '/admin', label: 'Admin', icon: Settings };
 
 export default function Header() {
   const [location] = useLocation();
@@ -97,6 +98,18 @@ export default function Header() {
                 ))}
               </PopoverContent>
             </Popover>
+
+            <Link href={adminItem.href}>
+              <Button
+                variant={location === adminItem.href ? 'default' : 'ghost'}
+                size="sm"
+                className="gap-2"
+                data-testid={`nav-link-${adminItem.href.replace('/', '')}`}
+              >
+                <Settings className="w-4 h-4" />
+                {adminItem.label}
+              </Button>
+            </Link>
 
             <ContactMenu />
             <TechStackMenu />
