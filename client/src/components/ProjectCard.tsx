@@ -82,17 +82,18 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     if (isProjectLinkArray(project.links)) {
       return project.links.map((link, index) => {
         const LinkIcon = getLinkIcon(link.type);
+        const isPrimary = index === 0;
         return (
           <Button
             key={index}
-            variant={getLinkVariant(link.type)}
-            size="sm"
+            variant={isPrimary ? 'default' : getLinkVariant(link.type)}
+            size={isPrimary ? 'default' : 'sm'}
             asChild
             data-testid={`link-${project.id}-${link.type}-${index}`}
           >
-            <a href={link.url} target="_blank" rel="noopener noreferrer" className="gap-1.5">
-              <LinkIcon className="w-3.5 h-3.5" />
-              {link.label}
+            <a href={link.url} target="_blank" rel="noopener noreferrer" className="gap-2">
+              <LinkIcon className="w-4 h-4" />
+              <span>{link.label}</span>
             </a>
           </Button>
         );
@@ -101,12 +102,43 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       const links = project.links;
       const linkButtons = [];
       
-      if (links.canva) {
+      // Determine primary link (demo > canva > github > video)
+      const primaryUrl = links.demo || links.canva || links.github || links.video;
+      const primaryType = primaryUrl === links.demo ? 'demo' : 
+                         primaryUrl === links.canva ? 'canva' :
+                         primaryUrl === links.github ? 'github' : 'video';
+      
+      if (links.demo) {
         linkButtons.push(
-          <Button key="canva" variant="default" size="sm" asChild data-testid={`link-${project.id}-canva`}>
-            <a href={links.canva} target="_blank" rel="noopener noreferrer" className="gap-1.5">
-              <Presentation className="w-3.5 h-3.5" />
-              Canva
+          <Button 
+            key="demo" 
+            variant="default" 
+            size="default" 
+            asChild 
+            data-testid={`link-${project.id}-demo`}
+            className="gap-2"
+          >
+            <a href={links.demo} target="_blank" rel="noopener noreferrer">
+              <Globe className="w-4 h-4" />
+              <span>Ver Projeto</span>
+            </a>
+          </Button>
+        );
+      }
+      
+      if (links.canva && links.canva !== primaryUrl) {
+        linkButtons.push(
+          <Button 
+            key="canva" 
+            variant="outline" 
+            size="sm" 
+            asChild 
+            data-testid={`link-${project.id}-canva`}
+            className="gap-1.5"
+          >
+            <a href={links.canva} target="_blank" rel="noopener noreferrer">
+              <Presentation className="w-4 h-4" />
+              <span>Canva</span>
             </a>
           </Button>
         );
@@ -114,10 +146,17 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       
       if (links.video) {
         linkButtons.push(
-          <Button key="video" variant="secondary" size="sm" asChild data-testid={`link-${project.id}-video`}>
-            <a href={links.video} target="_blank" rel="noopener noreferrer" className="gap-1.5">
-              <Video className="w-3.5 h-3.5" />
-              Video
+          <Button 
+            key="video" 
+            variant="outline" 
+            size="sm" 
+            asChild 
+            data-testid={`link-${project.id}-video`}
+            className="gap-1.5"
+          >
+            <a href={links.video} target="_blank" rel="noopener noreferrer">
+              <Video className="w-4 h-4" />
+              <span>Vídeo</span>
             </a>
           </Button>
         );
@@ -125,21 +164,17 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       
       if (links.github) {
         linkButtons.push(
-          <Button key="github" variant="outline" size="sm" asChild data-testid={`link-${project.id}-github`}>
-            <a href={links.github} target="_blank" rel="noopener noreferrer" className="gap-1.5">
-              <Github className="w-3.5 h-3.5" />
-              GitHub
-            </a>
-          </Button>
-        );
-      }
-      
-      if (links.demo) {
-        linkButtons.push(
-          <Button key="demo" variant="secondary" size="sm" asChild data-testid={`link-${project.id}-demo`}>
-            <a href={links.demo} target="_blank" rel="noopener noreferrer" className="gap-1.5">
-              <Globe className="w-3.5 h-3.5" />
-              Demo
+          <Button 
+            key="github" 
+            variant="outline" 
+            size="sm" 
+            asChild 
+            data-testid={`link-${project.id}-github`}
+            className="gap-1.5"
+          >
+            <a href={links.github} target="_blank" rel="noopener noreferrer">
+              <Github className="w-4 h-4" />
+              <span>Código</span>
             </a>
           </Button>
         );
