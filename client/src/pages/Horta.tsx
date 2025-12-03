@@ -8,18 +8,32 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { 
-  Trash2, Plus, Loader2, Play, Power, Droplets, Leaf
+  Trash2, Plus, Loader2, Play, Power, Droplets, Leaf, X
 } from 'lucide-react';
 import type { HortaMidia, InsertHortaMidia, HortaRegaControl } from '@shared/schema';
 import apresentacaoVideo from '@assets/Apresentação_Horta_Tania_2C_1764783573658.mp4';
 
+const MASTER_PASSWORD = 'Horta2024';
+
 export default function Horta() {
   const { toast } = useToast();
   const [showFormMidia, setShowFormMidia] = useState(false);
+  const [mediaToDelete, setMediaToDelete] = useState<number | null>(null);
+  const [enteredPassword, setEnteredPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
   // Queries
   const { data: midias = [], isLoading: loadingMidias } = useQuery<HortaMidia[]>({
@@ -80,6 +94,30 @@ export default function Horta() {
 
   const onSubmitMidia = (data: InsertHortaMidia) => {
     createMidiaMutation.mutate(data);
+  };
+
+  const handleDeleteClick = (id: number) => {
+    setMediaToDelete(id);
+    setEnteredPassword('');
+    setPasswordError('');
+  };
+
+  const handleConfirmDelete = () => {
+    if (!enteredPassword) {
+      setPasswordError('Digite a senha');
+      return;
+    }
+    if (enteredPassword !== MASTER_PASSWORD) {
+      setPasswordError('Senha incorreta');
+      setEnteredPassword('');
+      return;
+    }
+    if (mediaToDelete) {
+      deleteMidiaMutation.mutate(mediaToDelete);
+      setMediaToDelete(null);
+      setEnteredPassword('');
+      setPasswordError('');
+    }
   };
 
   const videos = midias.filter(m => m.tipo === 'video');
@@ -320,7 +358,7 @@ export default function Horta() {
                   {videos.map((video) => {
                     const youtubeId = extractYouTubeId(video.url);
                     return (
-                      <Card key={video.id} className="overflow-hidden hover-elevate" data-testid={`video-card-${video.id}`}>
+                      <Card key={video.id} className="overflow-hidden hover-elevate group relative" data-testid={`video-card-${video.id}`}>
                         {youtubeId && (
                           <div className="relative w-full h-48 bg-black">
                             <iframe
@@ -344,8 +382,9 @@ export default function Horta() {
                           <Button
                             variant="destructive"
                             size="sm"
-                            onClick={() => deleteMidiaMutation.mutate(video.id)}
+                            onClick={() => handleDeleteClick(video.id)}
                             disabled={deleteMidiaMutation.isPending}
+                            className="visibility-hidden group-hover:visibility-visible"
                             data-testid={`button-delete-video-${video.id}`}
                           >
                             <Trash2 className="w-4 h-4 mr-1" />
@@ -367,7 +406,7 @@ export default function Horta() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {fotos.map((foto) => (
-                    <Card key={foto.id} className="overflow-hidden hover-elevate" data-testid={`foto-card-${foto.id}`}>
+                    <Card key={foto.id} className="overflow-hidden hover-elevate group relative" data-testid={`foto-card-${foto.id}`}>
                       <div className="relative w-full h-48 bg-muted overflow-hidden">
                         <img
                           src={foto.url}
@@ -388,8 +427,9 @@ export default function Horta() {
                         <Button
                           variant="destructive"
                           size="sm"
-                          onClick={() => deleteMidiaMutation.mutate(foto.id)}
+                          onClick={() => handleDeleteClick(foto.id)}
                           disabled={deleteMidiaMutation.isPending}
+                          className="visibility-hidden group-hover:visibility-visible"
                           data-testid={`button-delete-foto-${foto.id}`}
                         >
                           <Trash2 className="w-4 h-4 mr-1" />
@@ -411,6 +451,52 @@ export default function Horta() {
               </div>
             )}
           </section>
+
+          {/* Delete Confirmation Modal */}
+          <AlertDialog open={mediaToDelete !== null} onOpenChange={(open) => !open && setMediaToDelete(null)}>
+            <AlertDialogContent data-testid="dialog-confirm-delete">
+              <AlertDialogHeader>
+                <AlertDialogTitle>Confirmar Remoção</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Para remover esta mídia, digite a senha mestre.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <div className="space-y-3">
+                <div className="relative">
+                  <Input
+                    type="password"
+                    placeholder="Senha mestre"
+                    value={enteredPassword}
+                    onChange={(e) => {
+                      setEnteredPassword(e.target.value);
+                      setPasswordError('');
+                    }}
+                    data-testid="input-delete-password"
+                    className={passwordError ? 'border-destructive' : ''}
+                  />
+                  {passwordError && (
+                    <p className="text-sm text-destructive mt-1" data-testid="text-password-error">
+                      {passwordError}
+                    </p>
+                  )}
+                </div>
+              </div>
+              <div className="flex gap-3 justify-end">
+                <AlertDialogCancel data-testid="button-cancel-delete">
+                  Cancelar
+                </AlertDialogCancel>
+                <Button
+                  variant="destructive"
+                  onClick={handleConfirmDelete}
+                  disabled={deleteMidiaMutation.isPending}
+                  data-testid="button-confirm-delete"
+                >
+                  {deleteMidiaMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                  Remover
+                </Button>
+              </div>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </main>
 
