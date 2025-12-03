@@ -37,23 +37,24 @@ export default function Footer() {
             </p>
           </div>
 
-          <div className="text-center md:text-right">
-            <p className="text-sm text-muted-foreground mb-2" data-testid="text-footer-author">
-              Desenvolvido por:
+          <div className="text-center md:text-right space-y-3">
+            <p className="text-sm text-muted-foreground" data-testid="text-footer-author">
+              Desenvolvido por
             </p>
             {authorLinkedin ? (
               <a
                 href={authorLinkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md hover-elevate transition-colors text-foreground hover:text-primary"
+                className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-lg bg-primary/10 border border-primary/20 hover-elevate transition-all text-foreground hover:bg-primary/20 hover:border-primary/40 hover:text-primary"
                 data-testid="link-author-linkedin"
+                title="Conecte com Cleyton Pinheiro no LinkedIn"
               >
-                <Linkedin className="w-4 h-4" />
-                <span className="text-sm font-medium">{authorName}</span>
+                <Linkedin className="w-5 h-5" />
+                <span className="font-semibold">{authorName}</span>
               </a>
             ) : (
-              <p className="text-sm text-foreground">{authorName}</p>
+              <p className="text-sm font-medium text-foreground">{authorName}</p>
             )}
           </div>
         </div>
