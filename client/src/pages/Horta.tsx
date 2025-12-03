@@ -15,6 +15,7 @@ import {
   Trash2, Plus, Loader2, Play, Power, Droplets, Leaf
 } from 'lucide-react';
 import type { HortaMidia, InsertHortaMidia, HortaRegaControl } from '@shared/schema';
+import apresentacaoVideo from '@assets/Apresentação_Horta_Tania_2C_1764783573658.mp4';
 
 export default function Horta() {
   const { toast } = useToast();
@@ -173,6 +174,29 @@ export default function Horta() {
               </CardContent>
             </Card>
           )}
+
+          {/* Featured Presentation Video */}
+          <Card className="overflow-hidden border-2 border-primary/20" data-testid="card-apresentacao">
+            <div className="relative w-full bg-black">
+              <video
+                controls
+                className="w-full h-auto"
+                poster=""
+                data-testid="video-apresentacao"
+              >
+                <source src={apresentacaoVideo} type="video/mp4" />
+                Seu navegador não suporta vídeo HTML5.
+              </video>
+            </div>
+            <CardContent className="pt-4">
+              <h3 className="text-lg font-semibold mb-2" data-testid="text-video-title">
+                Apresentação da Horta - Turma 2C
+              </h3>
+              <p className="text-sm text-muted-foreground" data-testid="text-video-description">
+                Conheça o projeto da Horta Smart do Colégio Estadual Tânia Varella apresentado pelos alunos da Turma 2C.
+              </p>
+            </CardContent>
+          </Card>
 
           {/* Media Section */}
           <section data-testid="section-midias">
