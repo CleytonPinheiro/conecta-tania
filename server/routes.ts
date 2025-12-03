@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertTurmaSchema, insertProjetoSchema } from "@shared/schema";
 import { z } from "zod";
+import nodemailer from "nodemailer";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -169,6 +170,59 @@ export async function registerRoutes(
         linkedin: process.env.VITE_AUTHOR_LINKEDIN || "",
       },
     });
+  });
+
+  // Send feedback
+  app.post("/api/feedback", async (req, res) => {
+    try {
+      const { name, email, message, type } = req.body;
+
+      // Validar dados
+      if (!name || !email || !message || !type) {
+        return res.status(400).json({ error: "Todos os campos são obrigatórios" });
+      }
+
+      // Criar transporter (usando Gmail SMTP ou outro provedor)
+      // Para produção, configure variáveis de ambiente
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_USER || "seu-email@gmail.com",
+          pass: process.env.EMAIL_PASS || "sua-senha-app",
+        },
+      });
+
+      const subject = `[Conecta Tânia] ${
+        type === "critica"
+          ? "Crítica"
+          : type === "sugestao"
+            ? "Sugestão"
+            : "Elogio"
+      }`;
+
+      const htmlContent = `
+        <h2>Novo Feedback Recebido</h2>
+        <p><strong>Nome:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Tipo:</strong> ${type === "critica" ? "Crítica" : type === "sugestao" ? "Sugestão" : "Elogio"}</p>
+        <p><strong>Mensagem:</strong></p>
+        <p>${message.replace(/\n/g, "<br>")}</p>
+      `;
+
+      // Enviar email
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER || "noreply@conectatania.com",
+        to: "cleyton.pinheiro.santos@escola.pr.gov.br",
+        replyTo: email,
+        subject: subject,
+        html: htmlContent,
+      });
+
+      res.status(200).json({ success: true, message: "Feedback enviado com sucesso!" });
+    } catch (error) {
+      console.error("Error sending feedback:", error);
+      res.status(500).json({ error: "Erro ao enviar feedback" });
+    }
   });
 
   return httpServer;

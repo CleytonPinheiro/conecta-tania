@@ -41,21 +41,21 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
   const onSubmit = async (data: FeedbackForm) => {
     setIsSubmitting(true);
     try {
-      const subject = `[Conecta Tânia] ${
-        data.type === 'critica'
-          ? 'Crítica'
-          : data.type === 'sugestao'
-            ? 'Sugestão'
-            : 'Elogio'
-      }`;
+      const response = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
 
-      const emailBody = `Nome: ${data.name}\nEmail: ${data.email}\nTipo: ${data.type}\n\n${data.message}`;
-
-      window.location.href = `mailto:cleyton.pinheiro.santos@escola.pr.gov.br?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+      if (!response.ok) {
+        throw new Error('Erro ao enviar feedback');
+      }
 
       toast({
         title: 'Sucesso!',
-        description: 'Seu cliente de email será aberto. Clique em enviar!',
+        description: 'Seu feedback foi enviado com sucesso!',
       });
 
       form.reset();
@@ -63,7 +63,7 @@ export function FeedbackModal({ isOpen, onClose }: FeedbackModalProps) {
     } catch (error) {
       toast({
         title: 'Erro',
-        description: 'Não foi possível preparar o email. Tente novamente.',
+        description: 'Não foi possível enviar o feedback. Tente novamente.',
         variant: 'destructive',
       });
     } finally {
