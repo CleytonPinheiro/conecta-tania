@@ -39,9 +39,35 @@ const TUTORIAL_STEPS: TutorialStep[] = [
     position: 'top',
   },
   {
-    id: 'filters',
-    title: '🏫 Filtros por Turma',
-    description: 'Clique em "Turma 1C" ou "Turma 2C" no menu para ver apenas os projetos de cada turma. Isso ajuda a acompanhar o progresso de cada classe!',
+    id: 'turmas-menu',
+    title: '🏫 Menu de Turmas',
+    description: 'Veja o novo menu "Turmas" no header? Clique nele para ver um submenu com "Turma 1C" e "Turma 2C". Escolha uma turma para filtrar apenas seus projetos!',
+    target: '[data-testid="nav-link-turmas"]',
+    position: 'bottom',
+  },
+  {
+    id: 'horta-menu',
+    title: '🌱 Horta Smart',
+    description: 'Temos uma página especial dedicada ao projeto da Horta! Clique em "Horta" no menu para conhecer o sistema inteligente de rega do Colégio Estadual Tânia Varella.',
+    position: 'bottom',
+  },
+  {
+    id: 'horta-video',
+    title: '🎬 Apresentação da Horta',
+    description: 'Na página da Horta, você verá um vídeo de apresentação feito pelos alunos da Turma 2C. Assista para conhecer melhor este incrível projeto!',
+    position: 'bottom',
+  },
+  {
+    id: 'horta-control',
+    title: '🎮 Controle da Rega',
+    description: 'A página da Horta tem um painel interativo! Você pode ligar/desligar o sistema de rega online e ver a umidade do solo em tempo real.',
+    target: '[data-testid="card-rega-control"]',
+    position: 'top',
+  },
+  {
+    id: 'horta-docs',
+    title: '📸 Documentação da Horta',
+    description: 'Encontre vídeos do YouTube e fotos do projeto Horta Smart. Você pode adicionar novas mídias para documentar o desenvolvimento do projeto!',
     position: 'bottom',
   },
   {
@@ -54,7 +80,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
   {
     id: 'admin',
     title: '⚙️ Painel de Administração',
-    description: 'Se você é professor ou admin, acesse "/admin" para criar novas turmas e projetos. Você pode gerenciar todos os conteúdos da plataforma!',
+    description: 'Se você é professor ou admin, acesse o menu "Admin" para criar novas turmas e projetos. Você pode gerenciar todos os conteúdos da plataforma!',
     position: 'bottom',
   },
   {
@@ -72,7 +98,7 @@ const TUTORIAL_STEPS: TutorialStep[] = [
   {
     id: 'end',
     title: '🎉 Pronto!',
-    description: 'Agora você conhece o Conecta Tânia! Explore os projetos, descubra o talento desses alunos e se inspire. Bom passeio! 🚀',
+    description: 'Agora você conhece o Conecta Tânia com todas as suas funcionalidades! Explore os projetos, a Horta Smart e se inspire com o talento desses alunos. Bom passeio! 🚀',
     position: 'bottom',
   },
 ];
