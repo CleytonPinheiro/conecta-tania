@@ -1,4 +1,4 @@
-import { ExternalLink, Github, Globe, Code, Leaf, Calendar, Map, Users, Video, Presentation, Edit, ImageIcon, X } from 'lucide-react';
+import { ExternalLink, Github, Globe, Code, Leaf, Calendar, Map, Users, Video, Presentation, Edit, ImageIcon, X, Check } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -89,6 +89,9 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   const [editCanvaLink, setEditCanvaLink] = useState<string>('');
   const [editVideoLink, setEditVideoLink] = useState<string>('');
   const [editGithubLink, setEditGithubLink] = useState<string>('');
+  const [editingStudentIndex, setEditingStudentIndex] = useState<number | null>(null);
+  const [editingStudentName, setEditingStudentName] = useState<string>('');
+  const [localStudents, setLocalStudents] = useState<string[]>(project.students);
   
   const CategoryIcon = categoryIcons[project.category] || Code;
   const categoryColor = categoryColors[project.category] || 'bg-muted text-muted-foreground';
@@ -140,6 +143,38 @@ export default function ProjectCard({ project }: ProjectCardProps) {
     if (editGithubLink) updateData.linkGithub = editGithubLink;
     
     updateProjetoMutation.mutate(updateData);
+  };
+
+  const startEditStudent = (index: number) => {
+    setEditingStudentIndex(index);
+    setEditingStudentName(localStudents[index]);
+  };
+
+  const saveStudentName = async (index: number) => {
+    if (!editingStudentName.trim()) {
+      toast({ title: 'Nome não pode estar vazio', variant: 'destructive' });
+      return;
+    }
+
+    const updatedStudents = [...localStudents];
+    updatedStudents[index] = editingStudentName;
+    setLocalStudents(updatedStudents);
+    setEditingStudentIndex(null);
+
+    try {
+      const projetoId = typeof project.id === 'string' ? parseInt(project.id.split('-')[0] + project.id.split('-')[1]) : project.id;
+      await apiRequest('PATCH', `/api/projetos/${projetoId}`, { alunos: updatedStudents });
+      queryClient.invalidateQueries({ queryKey: ['/api/projetos'] });
+      toast({ title: 'Nome do aluno atualizado!' });
+    } catch (error) {
+      toast({ title: 'Erro ao salvar nome', variant: 'destructive' });
+      setLocalStudents(project.students);
+    }
+  };
+
+  const cancelEditStudent = () => {
+    setEditingStudentIndex(null);
+    setEditingStudentName('');
   };
 
   const openEditDialog = () => {
@@ -321,18 +356,63 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               <span>Alunos:</span>
             </div>
             <div className="flex flex-wrap gap-2">
-              {project.students.map((student, index) => (
+              {localStudents.map((student, index) => (
                 <div 
                   key={index} 
-                  className="flex items-center gap-1.5"
+                  className="flex items-center gap-1.5 group"
                   data-testid={`student-${project.id}-${index}`}
                 >
-                  <Avatar className="w-6 h-6">
-                    <AvatarFallback className={`text-xs ${getAvatarColor(student)}`}>
-                      {getInitials(student)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-sm text-foreground">{student}</span>
+                  {editingStudentIndex === index ? (
+                    <div className="flex items-center gap-1.5 bg-muted px-2 py-1 rounded-md border border-primary">
+                      <Avatar className="w-5 h-5">
+                        <AvatarFallback className={`text-xs ${getAvatarColor(editingStudentName)}`}>
+                          {getInitials(editingStudentName || student)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <input
+                        type="text"
+                        value={editingStudentName}
+                        onChange={(e) => setEditingStudentName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') saveStudentName(index);
+                          if (e.key === 'Escape') cancelEditStudent();
+                        }}
+                        className="bg-transparent border-none outline-none text-sm w-24 text-foreground"
+                        autoFocus
+                        data-testid={`input-student-name-${project.id}-${index}`}
+                      />
+                      <button
+                        onClick={() => saveStudentName(index)}
+                        className="p-0.5 hover:bg-primary/20 rounded"
+                        data-testid={`button-save-student-${project.id}-${index}`}
+                      >
+                        <Check className="w-3 h-3" />
+                      </button>
+                      <button
+                        onClick={cancelEditStudent}
+                        className="p-0.5 hover:bg-destructive/20 rounded"
+                        data-testid={`button-cancel-student-${project.id}-${index}`}
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <Avatar className="w-6 h-6">
+                        <AvatarFallback className={`text-xs ${getAvatarColor(student)}`}>
+                          {getInitials(student)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <button
+                        onClick={() => startEditStudent(index)}
+                        className="text-sm text-foreground hover-elevate px-1.5 py-0.5 rounded cursor-pointer group-hover:bg-muted/50 transition-colors"
+                        title="Clique para editar o nome"
+                        data-testid={`button-edit-student-${project.id}-${index}`}
+                      >
+                        {student}
+                      </button>
+                    </>
+                  )}
                 </div>
               ))}
             </div>
