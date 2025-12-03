@@ -154,15 +154,11 @@ export default function GuidedTutorial() {
     return (
       <button
         onClick={handleRestart}
-        className="fixed right-6 z-40 p-3 rounded-full bg-primary text-primary-foreground shadow-lg hover-elevate transition-all"
-        style={{ top: '50%', transform: 'translateY(-50%)' }}
+        className="fixed bottom-6 right-6 z-40 w-10 h-10 rounded-full bg-muted/50 text-muted-foreground border border-border/50 shadow-sm hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200 opacity-40 hover:opacity-100"
         title="Iniciar tutorial"
         data-testid="button-start-tutorial"
       >
-        <span className="inline-flex items-center gap-2 text-sm font-medium">
-          <span>?</span>
-          <span>Tutorial</span>
-        </span>
+        <span className="text-lg font-medium">?</span>
       </button>
     );
   }
