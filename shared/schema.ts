@@ -57,6 +57,41 @@ export const hortaMidias = pgTable("horta_midias", {
   thumbnailUrl: text("thumbnail_url"),
 });
 
-export const insertHortaMidiaSchema = createInsertSchema(hortaMidias).omit({ id: true });
+export const insertHortaMidiaSchema = createInsertSchema(hortaMidias).omit({ id: true }).extend({
+  thumbnailUrl: z.string().optional().nullable(),
+  descricao: z.string().optional().nullable(),
+});
 export type InsertHortaMidia = z.infer<typeof insertHortaMidiaSchema>;
 export type HortaMidia = typeof hortaMidias.$inferSelect;
+
+// Horta Rega Control table (Sistema de Rega Smart)
+export const hortaRegaControl = pgTable("horta_rega_control", {
+  id: serial("id").primaryKey(),
+  nome: text("nome").notNull().default("Sistema de Rega"),
+  statusAtivo: text("status_ativo").notNull().default("desligado"), // 'ligado' ou 'desligado'
+  umidadeAtual: integer("umidade_atual").default(0),
+  ultimaAtualizacao: text("ultima_atualizacao"),
+});
+
+export const insertHortaRegaControlSchema = createInsertSchema(hortaRegaControl).omit({ id: true });
+export type InsertHortaRegaControl = z.infer<typeof insertHortaRegaControlSchema>;
+export type HortaRegaControl = typeof hortaRegaControl.$inferSelect;
+
+// Horta Rega Schedule table (Agendamentos)
+export const hortaRegaSchedules = pgTable("horta_rega_schedules", {
+  id: serial("id").primaryKey(),
+  titulo: text("titulo").notNull(),
+  descricao: text("descricao"),
+  horaLigada: text("hora_ligada").notNull(), // HH:mm
+  horaDesligada: text("hora_desligada").notNull(), // HH:mm
+  diasSemana: text("dias_semana").array().notNull(), // ['segunda', 'terca', ...]
+  ativo: text("ativo").notNull().default("sim"), // 'sim' ou 'nao'
+  criadoEm: text("criado_em"),
+});
+
+export const insertHortaRegaScheduleSchema = createInsertSchema(hortaRegaSchedules).omit({ id: true }).extend({
+  descricao: z.string().optional().nullable(),
+  criadoEm: z.string().optional().nullable(),
+});
+export type InsertHortaRegaSchedule = z.infer<typeof insertHortaRegaScheduleSchema>;
+export type HortaRegaSchedule = typeof hortaRegaSchedules.$inferSelect;

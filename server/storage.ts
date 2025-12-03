@@ -3,7 +3,9 @@ import {
   type Turma, type InsertTurma,
   type Projeto, type InsertProjeto,
   type HortaMidia, type InsertHortaMidia,
-  users, turmas, projetos, hortaMidias
+  type HortaRegaControl, type InsertHortaRegaControl,
+  type HortaRegaSchedule, type InsertHortaRegaSchedule,
+  users, turmas, projetos, hortaMidias, hortaRegaControl, hortaRegaSchedules
 } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
@@ -36,6 +38,17 @@ export interface IStorage {
   createHortaMidia(midia: InsertHortaMidia): Promise<HortaMidia>;
   updateHortaMidia(id: number, midia: Partial<InsertHortaMidia>): Promise<HortaMidia | undefined>;
   deleteHortaMidia(id: number): Promise<boolean>;
+
+  // Horta Rega Control
+  getHortaRegaControl(): Promise<HortaRegaControl | undefined>;
+  updateHortaRegaControl(data: Partial<InsertHortaRegaControl>): Promise<HortaRegaControl>;
+
+  // Horta Rega Schedules
+  getHortaRegaSchedules(): Promise<HortaRegaSchedule[]>;
+  getHortaRegaSchedule(id: number): Promise<HortaRegaSchedule | undefined>;
+  createHortaRegaSchedule(schedule: InsertHortaRegaSchedule): Promise<HortaRegaSchedule>;
+  updateHortaRegaSchedule(id: number, schedule: Partial<InsertHortaRegaSchedule>): Promise<HortaRegaSchedule | undefined>;
+  deleteHortaRegaSchedule(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -136,6 +149,42 @@ export class DatabaseStorage implements IStorage {
 
   async deleteHortaMidia(id: number): Promise<boolean> {
     await db.delete(hortaMidias).where(eq(hortaMidias.id, id));
+    return true;
+  }
+
+  // Horta Rega Control
+  async getHortaRegaControl(): Promise<HortaRegaControl | undefined> {
+    const [control] = await db.select().from(hortaRegaControl);
+    return control;
+  }
+
+  async updateHortaRegaControl(data: Partial<InsertHortaRegaControl>): Promise<HortaRegaControl> {
+    const [updated] = await db.update(hortaRegaControl).set(data).returning();
+    return updated;
+  }
+
+  // Horta Rega Schedules
+  async getHortaRegaSchedules(): Promise<HortaRegaSchedule[]> {
+    return db.select().from(hortaRegaSchedules);
+  }
+
+  async getHortaRegaSchedule(id: number): Promise<HortaRegaSchedule | undefined> {
+    const [schedule] = await db.select().from(hortaRegaSchedules).where(eq(hortaRegaSchedules.id, id));
+    return schedule;
+  }
+
+  async createHortaRegaSchedule(schedule: InsertHortaRegaSchedule): Promise<HortaRegaSchedule> {
+    const [newSchedule] = await db.insert(hortaRegaSchedules).values(schedule).returning();
+    return newSchedule;
+  }
+
+  async updateHortaRegaSchedule(id: number, schedule: Partial<InsertHortaRegaSchedule>): Promise<HortaRegaSchedule | undefined> {
+    const [updated] = await db.update(hortaRegaSchedules).set(schedule).where(eq(hortaRegaSchedules.id, id)).returning();
+    return updated;
+  }
+
+  async deleteHortaRegaSchedule(id: number): Promise<boolean> {
+    await db.delete(hortaRegaSchedules).where(eq(hortaRegaSchedules.id, id));
     return true;
   }
 }

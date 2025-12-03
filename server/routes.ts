@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertTurmaSchema, insertProjetoSchema, insertHortaMidiaSchema } from "@shared/schema";
+import { insertTurmaSchema, insertProjetoSchema, insertHortaMidiaSchema, insertHortaRegaControlSchema, insertHortaRegaScheduleSchema } from "@shared/schema";
 import { z } from "zod";
 import nodemailer from "nodemailer";
 
@@ -240,6 +240,122 @@ export async function registerRoutes(
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ error: "Erro ao deletar mídia" });
+    }
+  });
+
+  // ============ HORTA REGA CONTROL ROUTES ============
+
+  // Get horta rega control
+  app.get("/api/horta-rega-control", async (req, res) => {
+    try {
+      let control = await storage.getHortaRegaControl();
+      
+      // Se não existe, criar padrão
+      if (!control) {
+        control = await storage.updateHortaRegaControl({
+          nome: "Sistema de Rega",
+          statusAtivo: "desligado",
+          umidadeAtual: 65,
+          ultimaAtualizacao: new Date().toLocaleString('pt-BR'),
+        });
+      }
+      
+      res.json(control);
+    } catch (error) {
+      console.error("Error fetching horta rega control:", error);
+      res.status(500).json({ error: "Erro ao buscar controle de rega" });
+    }
+  });
+
+  // Update horta rega control
+  app.patch("/api/horta-rega-control", async (req, res) => {
+    try {
+      const data = insertHortaRegaControlSchema.partial().parse(req.body);
+      const updated = await storage.updateHortaRegaControl({
+        ...data,
+        ultimaAtualizacao: new Date().toLocaleString('pt-BR'),
+      });
+      res.json(updated);
+    } catch (error) {
+      console.error("Error updating horta rega control:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Erro ao atualizar controle de rega" });
+    }
+  });
+
+  // ============ HORTA REGA SCHEDULES ROUTES ============
+
+  // Get all horta rega schedules
+  app.get("/api/horta-rega-schedules", async (req, res) => {
+    try {
+      const schedules = await storage.getHortaRegaSchedules();
+      res.json(schedules);
+    } catch (error) {
+      console.error("Error fetching horta rega schedules:", error);
+      res.status(500).json({ error: "Erro ao buscar agendamentos" });
+    }
+  });
+
+  // Get horta rega schedule by id
+  app.get("/api/horta-rega-schedules/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const schedule = await storage.getHortaRegaSchedule(id);
+      if (!schedule) {
+        return res.status(404).json({ error: "Agendamento não encontrado" });
+      }
+      res.json(schedule);
+    } catch (error) {
+      res.status(500).json({ error: "Erro ao buscar agendamento" });
+    }
+  });
+
+  // Create horta rega schedule
+  app.post("/api/horta-rega-schedules", async (req, res) => {
+    try {
+      const data = insertHortaRegaScheduleSchema.parse(req.body);
+      const schedule = await storage.createHortaRegaSchedule({
+        ...data,
+        criadoEm: new Date().toLocaleString('pt-BR'),
+      });
+      res.status(201).json(schedule);
+    } catch (error) {
+      console.error("Error creating horta rega schedule:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Erro ao criar agendamento" });
+    }
+  });
+
+  // Update horta rega schedule
+  app.patch("/api/horta-rega-schedules/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const data = insertHortaRegaScheduleSchema.partial().parse(req.body);
+      const schedule = await storage.updateHortaRegaSchedule(id, data);
+      if (!schedule) {
+        return res.status(404).json({ error: "Agendamento não encontrado" });
+      }
+      res.json(schedule);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors });
+      }
+      res.status(500).json({ error: "Erro ao atualizar agendamento" });
+    }
+  });
+
+  // Delete horta rega schedule
+  app.delete("/api/horta-rega-schedules/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteHortaRegaSchedule(id);
+      res.status(204).send();
+    } catch (error) {
+      res.status(500).json({ error: "Erro ao deletar agendamento" });
     }
   });
 
