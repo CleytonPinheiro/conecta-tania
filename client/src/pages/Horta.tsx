@@ -484,88 +484,81 @@ export default function Horta() {
                                                         </p>
                                                 </div>
 
-                                                {/* Foto Principal */}
-                                                <div className="flex justify-center">
-                                                        <Card className="overflow-hidden max-w-2xl w-full" data-testid="card-foto-principal">
-                                                                <div className="relative">
+                                                {/* Foto e Vídeos da Horta */}
+                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                                        {/* Foto Principal */}
+                                                        <Card className="overflow-hidden" data-testid="card-foto-principal">
+                                                                <div className="bg-black rounded-t-lg overflow-hidden">
                                                                         <img
                                                                                 src={hortaFoto1}
                                                                                 alt="Canteiros da horta com sistema de irrigação e hortaliças plantadas"
-                                                                                className="w-full h-auto object-cover"
+                                                                                className="w-full max-h-[40vh] object-contain"
                                                                                 data-testid="img-horta-principal"
                                                                         />
                                                                 </div>
-                                                                <CardContent className="py-4">
-                                                                        <p className="text-center text-muted-foreground text-sm">
-                                                                                Canteiros da horta com sistema de irrigação por gotejamento e hortaliças em crescimento
+                                                                <CardContent className="py-3">
+                                                                        <p className="text-center text-sm text-muted-foreground">
+                                                                                Canteiros da Horta
                                                                         </p>
                                                                 </CardContent>
                                                         </Card>
-                                                </div>
 
-                                                {/* Vídeos da Horta */}
-                                                <div className="space-y-4">
-                                                        <h3 className="text-xl font-semibold text-center text-foreground">
-                                                                Vídeos do Projeto
-                                                        </h3>
-                                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                                                {/* Video 1 */}
-                                                                <Card className="overflow-hidden" data-testid="card-video-1">
-                                                                        <div className="bg-black rounded-t-lg overflow-hidden">
-                                                                                <video
-                                                                                        controls
-                                                                                        className="w-full max-h-[40vh] object-contain"
-                                                                                        data-testid="video-horta-1"
-                                                                                >
-                                                                                        <source src={hortaVideo1} type="video/mp4" />
-                                                                                        Seu navegador não suporta vídeo HTML5.
-                                                                                </video>
-                                                                        </div>
-                                                                        <CardContent className="py-3">
-                                                                                <p className="text-center text-sm text-muted-foreground">
-                                                                                        Registro da Horta - Parte 1
-                                                                                </p>
-                                                                        </CardContent>
-                                                                </Card>
+                                                        {/* Video 1 */}
+                                                        <Card className="overflow-hidden" data-testid="card-video-1">
+                                                                <div className="bg-black rounded-t-lg overflow-hidden">
+                                                                        <video
+                                                                                controls
+                                                                                className="w-full max-h-[40vh] object-contain"
+                                                                                data-testid="video-horta-1"
+                                                                        >
+                                                                                <source src={hortaVideo1} type="video/mp4" />
+                                                                                Seu navegador não suporta vídeo HTML5.
+                                                                        </video>
+                                                                </div>
+                                                                <CardContent className="py-3">
+                                                                        <p className="text-center text-sm text-muted-foreground">
+                                                                                Registro da Horta - Parte 1
+                                                                        </p>
+                                                                </CardContent>
+                                                        </Card>
 
-                                                                {/* Video 2 */}
-                                                                <Card className="overflow-hidden" data-testid="card-video-2">
-                                                                        <div className="bg-black rounded-t-lg overflow-hidden">
-                                                                                <video
-                                                                                        controls
-                                                                                        className="w-full max-h-[40vh] object-contain"
-                                                                                        data-testid="video-horta-2"
-                                                                                >
-                                                                                        <source src={hortaVideo2} type="video/mp4" />
-                                                                                        Seu navegador não suporta vídeo HTML5.
-                                                                                </video>
-                                                                        </div>
-                                                                        <CardContent className="py-3">
-                                                                                <p className="text-center text-sm text-muted-foreground">
-                                                                                        Registro da Horta - Parte 2
-                                                                                </p>
-                                                                        </CardContent>
-                                                                </Card>
+                                                        {/* Video 2 */}
+                                                        <Card className="overflow-hidden" data-testid="card-video-2">
+                                                                <div className="bg-black rounded-t-lg overflow-hidden">
+                                                                        <video
+                                                                                controls
+                                                                                className="w-full max-h-[40vh] object-contain"
+                                                                                data-testid="video-horta-2"
+                                                                        >
+                                                                                <source src={hortaVideo2} type="video/mp4" />
+                                                                                Seu navegador não suporta vídeo HTML5.
+                                                                        </video>
+                                                                </div>
+                                                                <CardContent className="py-3">
+                                                                        <p className="text-center text-sm text-muted-foreground">
+                                                                                Registro da Horta - Parte 2
+                                                                        </p>
+                                                                </CardContent>
+                                                        </Card>
 
-                                                                {/* Video 3 */}
-                                                                <Card className="overflow-hidden" data-testid="card-video-3">
-                                                                        <div className="bg-black rounded-t-lg overflow-hidden">
-                                                                                <video
-                                                                                        controls
-                                                                                        className="w-full max-h-[40vh] object-contain"
-                                                                                        data-testid="video-horta-3"
-                                                                                >
-                                                                                        <source src={hortaVideo3} type="video/mp4" />
-                                                                                        Seu navegador não suporta vídeo HTML5.
-                                                                                </video>
-                                                                        </div>
-                                                                        <CardContent className="py-3">
-                                                                                <p className="text-center text-sm text-muted-foreground">
-                                                                                        Registro da Horta - Parte 3
-                                                                                </p>
-                                                                        </CardContent>
-                                                                </Card>
-                                                        </div>
+                                                        {/* Video 3 */}
+                                                        <Card className="overflow-hidden" data-testid="card-video-3">
+                                                                <div className="bg-black rounded-t-lg overflow-hidden">
+                                                                        <video
+                                                                                controls
+                                                                                className="w-full max-h-[40vh] object-contain"
+                                                                                data-testid="video-horta-3"
+                                                                        >
+                                                                                <source src={hortaVideo3} type="video/mp4" />
+                                                                                Seu navegador não suporta vídeo HTML5.
+                                                                        </video>
+                                                                </div>
+                                                                <CardContent className="py-3">
+                                                                        <p className="text-center text-sm text-muted-foreground">
+                                                                                Registro da Horta - Parte 3
+                                                                        </p>
+                                                                </CardContent>
+                                                        </Card>
                                                 </div>
                                         </section>
 
