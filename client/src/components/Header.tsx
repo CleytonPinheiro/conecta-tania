@@ -1,4 +1,4 @@
-import { GraduationCap, MapPin, Home, Users, Menu, Settings, Leaf } from 'lucide-react';
+import { GraduationCap, MapPin, Home, Users, Menu, Settings, Leaf, ChevronDown } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { Button } from '@/components/ui/button';
 import {
@@ -6,6 +6,11 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { useState } from 'react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { ContactMenu } from '@/components/ContactMenu';
@@ -14,9 +19,12 @@ import { TechStackMenu } from '@/components/TechStackMenu';
 const navItems = [
   { href: '/', label: 'Início', icon: Home },
   { href: '/horta', label: 'Horta', icon: Leaf },
-  { href: '/turma-1c', label: 'Turma 1C', icon: Users },
-  { href: '/turma-2c', label: 'Turma 2C', icon: Users },
   { href: '/admin', label: 'Admin', icon: Settings },
+];
+
+const turmaItems = [
+  { href: '/turma-1c', label: 'Turma 1C' },
+  { href: '/turma-2c', label: 'Turma 2C' },
 ];
 
 export default function Header() {
@@ -60,6 +68,36 @@ export default function Header() {
                 </Link>
               );
             })}
+            
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={location === '/turma-1c' || location === '/turma-2c' ? 'default' : 'ghost'}
+                  size="sm"
+                  className="gap-2"
+                  data-testid="nav-link-turmas"
+                >
+                  <Users className="w-4 h-4" />
+                  Turmas
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-32 p-1" align="start">
+                {turmaItems.map((item) => (
+                  <Link key={item.href} href={item.href}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start"
+                      data-testid={`nav-link-${item.href.replace('/', '')}`}
+                    >
+                      {item.label}
+                    </Button>
+                  </Link>
+                ))}
+              </PopoverContent>
+            </Popover>
+
             <ContactMenu />
             <TechStackMenu />
             <ThemeToggle />
@@ -89,6 +127,23 @@ export default function Header() {
                     </Link>
                   );
                 })}
+                
+                <div className="space-y-1">
+                  <p className="text-sm font-semibold px-4 py-2 text-muted-foreground">Turmas</p>
+                  {turmaItems.map((item) => (
+                    <Link key={item.href} href={item.href} onClick={() => setMobileMenuOpen(false)}>
+                      <Button
+                        variant={location === item.href ? 'default' : 'ghost'}
+                        className="w-full justify-start gap-3 ml-2"
+                        data-testid={`nav-mobile-link-${item.href.replace('/', '')}`}
+                      >
+                        <Users className="w-5 h-5" />
+                        {item.label}
+                      </Button>
+                    </Link>
+                  ))}
+                </div>
+                
                 <div className="pt-4 border-t mt-4 space-y-3">
                   <Button
                     variant="ghost"
