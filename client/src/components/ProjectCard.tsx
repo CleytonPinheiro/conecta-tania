@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -86,14 +86,17 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editImagePreview, setEditImagePreview] = useState<string>('');
   const [editDemoLink, setEditDemoLink] = useState<string>('');
+  const [editCanvaLink, setEditCanvaLink] = useState<string>('');
+  const [editVideoLink, setEditVideoLink] = useState<string>('');
+  const [editGithubLink, setEditGithubLink] = useState<string>('');
   
   const CategoryIcon = categoryIcons[project.category] || Code;
   const categoryColor = categoryColors[project.category] || 'bg-muted text-muted-foreground';
   
-  const hasDemo = !isProjectLinkArray(project.links) && (project.links as ProjectLinks).demo;
+  const links = !isProjectLinkArray(project.links) ? (project.links as ProjectLinks) : {};
 
   const updateProjetoMutation = useMutation({
-    mutationFn: async (data: { imagemUrl?: string; linkDemo?: string }) => {
+    mutationFn: async (data: any) => {
       const projetoId = typeof project.id === 'string' ? parseInt(project.id.split('-')[0] + project.id.split('-')[1]) : project.id;
       return apiRequest('PATCH', `/api/projetos/${projetoId}`, data);
     },
@@ -102,6 +105,9 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       setEditDialogOpen(false);
       setEditImagePreview('');
       setEditDemoLink('');
+      setEditCanvaLink('');
+      setEditVideoLink('');
+      setEditGithubLink('');
       toast({ title: 'Projeto atualizado com sucesso!' });
     },
     onError: () => {
@@ -121,16 +127,28 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   };
 
   const handleSaveEdit = () => {
-    if (!editDemoLink && !editImagePreview) {
-      toast({ title: 'Digite um link Demo ou adicione uma imagem', variant: 'destructive' });
+    if (!editDemoLink && !editCanvaLink && !editVideoLink && !editGithubLink && !editImagePreview) {
+      toast({ title: 'Adicione pelo menos uma imagem ou link', variant: 'destructive' });
       return;
     }
 
-    const updateData: { imagemUrl?: string; linkDemo?: string } = {};
+    const updateData: any = {};
     if (editImagePreview) updateData.imagemUrl = editImagePreview;
     if (editDemoLink) updateData.linkDemo = editDemoLink;
+    if (editCanvaLink) updateData.linkCanva = editCanvaLink;
+    if (editVideoLink) updateData.linkVideo = editVideoLink;
+    if (editGithubLink) updateData.linkGithub = editGithubLink;
     
     updateProjetoMutation.mutate(updateData);
+  };
+
+  const openEditDialog = () => {
+    setEditImagePreview('');
+    setEditDemoLink(links.demo || '');
+    setEditCanvaLink(links.canva || '');
+    setEditVideoLink(links.video || '');
+    setEditGithubLink(links.github || '');
+    setEditDialogOpen(true);
   };
 
   const getAvailableLinks = () => {
@@ -170,12 +188,6 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       const links = project.links;
       const linkButtons = [];
       
-      // Determine primary link (demo > canva > github > video)
-      const primaryUrl = links.demo || links.canva || links.github || links.video;
-      const primaryType = primaryUrl === links.demo ? 'demo' : 
-                         primaryUrl === links.canva ? 'canva' :
-                         primaryUrl === links.github ? 'github' : 'video';
-      
       if (links.demo) {
         const isReplit = links.demo.includes('replit.com');
         const DemoIcon = isReplit ? Code : Globe;
@@ -198,7 +210,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         );
       }
       
-      if (links.canva && links.canva !== primaryUrl) {
+      if (links.canva) {
         linkButtons.push(
           <Button 
             key="canva" 
@@ -259,7 +271,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Card className="overflow-visible hover-elevate transition-all duration-300" data-testid={`card-project-${project.id}`}>
       <CardContent className="p-0">
-        <div className="relative aspect-video bg-gradient-to-br from-muted/50 to-muted flex items-center justify-center rounded-t-lg overflow-hidden">
+        <div className="relative aspect-video bg-gradient-to-br from-muted/50 to-muted flex items-center justify-center rounded-t-lg overflow-hidden group">
           {project.imagemUrl ? (
             <img 
               src={project.imagemUrl} 
@@ -279,6 +291,16 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           >
             Turma {project.turma}
           </Badge>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={openEditDialog}
+            className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity gap-2"
+            data-testid={`button-edit-header-${project.id}`}
+          >
+            <Edit className="w-4 h-4" />
+            <span className="hidden sm:inline">Editar</span>
+          </Button>
         </div>
         
         <div className="p-6 space-y-4">
@@ -341,94 +363,120 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           <div className="flex flex-wrap gap-2 pt-2">
             {renderLinks()}
           </div>
-
-          {!hasDemo && (
-            <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
-              <DialogTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="w-full gap-2 mt-2"
-                  data-testid={`button-edit-${project.id}`}
-                >
-                  <Edit className="w-4 h-4" />
-                  Adicionar Screenshot e Demo
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Editar {project.title}</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium">Screenshot (opcional)</label>
-                    <label className="block">
-                      <div className="border-2 border-dashed border-border rounded-lg p-4 hover:border-primary/50 transition-colors cursor-pointer">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleEditImageChange}
-                          className="hidden"
-                        />
-                        <div className="text-center">
-                          <ImageIcon className="w-6 h-6 mx-auto mb-2 text-muted-foreground" />
-                          <p className="text-sm text-muted-foreground">Clique ou arraste uma imagem</p>
-                        </div>
-                      </div>
-                    </label>
-                    {editImagePreview && (
-                      <div className="relative rounded-lg overflow-hidden">
-                        <img 
-                          src={editImagePreview} 
-                          alt="Preview" 
-                          className="w-full h-40 object-cover"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setEditImagePreview('')}
-                          className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-md p-1"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium">Link Demo/Projeto</label>
-                    <Input
-                      placeholder="https://..."
-                      value={editDemoLink}
-                      onChange={(e) => setEditDemoLink(e.target.value)}
-                      data-testid={`input-edit-demo-${project.id}`}
-                    />
-                  </div>
-
-                  <div className="flex gap-2 pt-4">
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      onClick={() => setEditDialogOpen(false)}
-                      className="flex-1"
-                    >
-                      Cancelar
-                    </Button>
-                    <Button 
-                      type="button" 
-                      onClick={handleSaveEdit}
-                      disabled={updateProjetoMutation.isPending}
-                      className="flex-1"
-                      data-testid={`button-save-edit-${project.id}`}
-                    >
-                      Salvar
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-          )}
         </div>
       </CardContent>
+
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Editar {project.title}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="block text-sm font-medium">Screenshot (opcional)</label>
+              <label className="block">
+                <div className="border-2 border-dashed border-border rounded-lg p-4 hover:border-primary/50 transition-colors cursor-pointer">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleEditImageChange}
+                    className="hidden"
+                  />
+                  <div className="text-center">
+                    <ImageIcon className="w-6 h-6 mx-auto mb-2 text-muted-foreground" />
+                    <p className="text-sm text-muted-foreground">Clique ou arraste uma imagem</p>
+                  </div>
+                </div>
+              </label>
+              {editImagePreview && (
+                <div className="relative rounded-lg overflow-hidden">
+                  <img 
+                    src={editImagePreview} 
+                    alt="Preview" 
+                    className="w-full h-40 object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setEditImagePreview('')}
+                    className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-md p-1"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-3 pt-2 border-t">
+              <h4 className="font-medium text-sm">Links do Projeto</h4>
+              <div className="grid gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-medium flex items-center gap-2">
+                    <Globe className="w-3 h-3" />
+                    Link Demo/Projeto
+                  </label>
+                  <Input
+                    placeholder="https://..."
+                    value={editDemoLink}
+                    onChange={(e) => setEditDemoLink(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium flex items-center gap-2">
+                    <Presentation className="w-3 h-3" />
+                    Link Canva
+                  </label>
+                  <Input
+                    placeholder="https://canva.com/..."
+                    value={editCanvaLink}
+                    onChange={(e) => setEditCanvaLink(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium flex items-center gap-2">
+                    <Video className="w-3 h-3" />
+                    Link Vídeo
+                  </label>
+                  <Input
+                    placeholder="https://youtube.com/..."
+                    value={editVideoLink}
+                    onChange={(e) => setEditVideoLink(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-medium flex items-center gap-2">
+                    <Github className="w-3 h-3" />
+                    Link GitHub
+                  </label>
+                  <Input
+                    placeholder="https://github.com/..."
+                    value={editGithubLink}
+                    onChange={(e) => setEditGithubLink(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setEditDialogOpen(false)}
+                className="flex-1"
+              >
+                Cancelar
+              </Button>
+              <Button 
+                type="button" 
+                onClick={handleSaveEdit}
+                disabled={updateProjetoMutation.isPending}
+                className="flex-1"
+              >
+                Salvar
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }
