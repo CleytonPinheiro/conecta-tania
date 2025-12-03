@@ -177,6 +177,10 @@ export default function ProjectCard({ project }: ProjectCardProps) {
                          primaryUrl === links.github ? 'github' : 'video';
       
       if (links.demo) {
+        const isReplit = links.demo.includes('replit.com');
+        const DemoIcon = isReplit ? Code : Globe;
+        const demoText = isReplit ? 'Ver no Replit' : 'Ver Projeto';
+        
         linkButtons.push(
           <Button 
             key="demo" 
@@ -187,8 +191,8 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             className="gap-2"
           >
             <a href={links.demo} target="_blank" rel="noopener noreferrer">
-              <Globe className="w-4 h-4" />
-              <span>Ver Projeto</span>
+              <DemoIcon className="w-4 h-4" />
+              <span>{demoText}</span>
             </a>
           </Button>
         );
