@@ -78,6 +78,19 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   const CategoryIcon = categoryIcons[project.category] || Code;
   const categoryColor = categoryColors[project.category] || 'bg-muted text-muted-foreground';
 
+  const getAvailableLinks = () => {
+    if (isProjectLinkArray(project.links)) {
+      return [];
+    }
+    const links = project.links;
+    const available = [];
+    if (links.demo) available.push({ type: 'demo', icon: Globe, label: 'Demo' });
+    if (links.canva) available.push({ type: 'canva', icon: Presentation, label: 'Canva' });
+    if (links.video) available.push({ type: 'video', icon: Video, label: 'Vídeo' });
+    if (links.github) available.push({ type: 'github', icon: Github, label: 'Código' });
+    return available;
+  };
+
   const renderLinks = () => {
     if (isProjectLinkArray(project.links)) {
       return project.links.map((link, index) => {
@@ -243,6 +256,28 @@ export default function ProjectCard({ project }: ProjectCardProps) {
               ))}
             </div>
           </div>
+
+          {getAvailableLinks().length > 0 && (
+            <div className="space-y-2 pt-2">
+              <p className="text-xs text-muted-foreground font-medium">Recursos disponíveis:</p>
+              <div className="flex flex-wrap gap-1.5">
+                {getAvailableLinks().map((link) => {
+                  const LinkIcon = link.icon;
+                  return (
+                    <Badge 
+                      key={link.type} 
+                      variant="secondary" 
+                      className="flex items-center gap-1 text-xs"
+                      data-testid={`badge-resource-${project.id}-${link.type}`}
+                    >
+                      <LinkIcon className="w-3 h-3" />
+                      {link.label}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           
           <div className="flex flex-wrap gap-2 pt-2">
             {renderLinks()}
