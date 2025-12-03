@@ -21,7 +21,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { 
-  Trash2, Plus, Loader2, Play, Power, Droplets, Leaf, X
+  Trash2, Plus, Loader2, Play, Power, Droplets, Leaf, X, BookOpen, Lightbulb, Wrench, Target
 } from 'lucide-react';
 import type { HortaMidia, InsertHortaMidia, HortaRegaControl } from '@shared/schema';
 import apresentacaoVideo from '@assets/Apresentação_Horta_Tania_2C_1764783573658.mp4';
@@ -148,6 +148,101 @@ export default function Horta() {
               </p>
             </div>
           </div>
+
+          {/* História da Horta */}
+          <section className="space-y-8" data-testid="section-historia">
+            <div className="text-center space-y-3">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground flex items-center justify-center gap-3">
+                <BookOpen className="w-8 h-8 text-primary" />
+                Nossa História
+              </h2>
+              <p className="text-muted-foreground max-w-3xl mx-auto">
+                Conheça a trajetória do projeto Horta Smart, desde a ideia inicial até sua implementação no Colégio Estadual Tânia Varella.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* A Ideia */}
+              <Card className="border-l-4 border-l-primary" data-testid="card-historia-ideia">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <Lightbulb className="w-6 h-6 text-primary" />
+                    </div>
+                    <CardTitle className="text-xl">A Ideia</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="text-muted-foreground space-y-3">
+                  <p>
+                    O projeto nasceu em 2024 a partir de uma observação dos alunos da Turma 2C do Curso Técnico em Desenvolvimento de Sistemas: como unir tecnologia e sustentabilidade de forma prática e educativa?
+                  </p>
+                  <p>
+                    A resposta veio com a proposta de criar uma horta escolar inteligente, capaz de ser monitorada e controlada remotamente, integrando conhecimentos de programação, eletrônica e agricultura sustentável.
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Desenvolvimento */}
+              <Card className="border-l-4 border-l-accent" data-testid="card-historia-desenvolvimento">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-accent/10 rounded-lg">
+                      <Wrench className="w-6 h-6 text-accent-foreground" />
+                    </div>
+                    <CardTitle className="text-xl">O Desenvolvimento</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="text-muted-foreground space-y-3">
+                  <p>
+                    Com orientação dos professores, os alunos iniciaram o desenvolvimento do sistema de irrigação automatizada. O projeto envolveu diversas etapas: planejamento do espaço físico, escolha das culturas, montagem do sistema de irrigação e programação do controle remoto.
+                  </p>
+                  <p>
+                    Utilizando sensores de umidade do solo, microcontroladores e uma interface web desenvolvida pelos próprios alunos, a Horta Smart ganhou vida, permitindo o monitoramento em tempo real das condições do solo.
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Implementação */}
+              <Card className="border-l-4 border-l-green-500" data-testid="card-historia-implementacao">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-green-500/10 rounded-lg">
+                      <Leaf className="w-6 h-6 text-green-600" />
+                    </div>
+                    <CardTitle className="text-xl">A Implementação</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="text-muted-foreground space-y-3">
+                  <p>
+                    A horta foi instalada em um espaço do Colégio Estadual Tânia Varella, em Maringá-PR. Os canteiros foram preparados com solo rico em nutrientes, e o sistema de irrigação por gotejamento foi conectado ao painel de controle digital.
+                  </p>
+                  <p>
+                    Hoje, qualquer pessoa pode acompanhar e controlar a rega da horta através desta plataforma, demonstrando como a Internet das Coisas (IoT) pode transformar práticas agrícolas tradicionais.
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* Objetivos */}
+              <Card className="border-l-4 border-l-blue-500" data-testid="card-historia-objetivos">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-500/10 rounded-lg">
+                      <Target className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <CardTitle className="text-xl">Nossos Objetivos</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="text-muted-foreground space-y-3">
+                  <p>
+                    O projeto Horta Smart vai além do cultivo de hortaliças. Seus objetivos incluem: promover a educação ambiental, incentivar hábitos alimentares saudáveis, aplicar conceitos de programação em projetos reais e desenvolver consciência sobre o uso sustentável da água.
+                  </p>
+                  <p>
+                    Os alimentos produzidos são utilizados na merenda escolar, fechando um ciclo completo de sustentabilidade e aprendizado prático para toda a comunidade escolar.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </section>
 
           {/* Control Panel */}
           {!loadingControl && regaControl && (
