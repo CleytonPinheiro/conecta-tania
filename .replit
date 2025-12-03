@@ -15,7 +15,7 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 35459
+localPort = 42355
 externalPort = 3001
 
 [[ports]]
@@ -45,3 +45,9 @@ author = "agent"
 task = "shell.exec"
 args = "npm run dev"
 waitForPort = 5000
+
+[userenv]
+
+[userenv.shared]
+VITE_AUTHOR_NAME = "Cleyton Pinheiro"
+VITE_AUTHOR_LINKEDIN = "https://www.linkedin.com/in/cleytonpinheiro/"
