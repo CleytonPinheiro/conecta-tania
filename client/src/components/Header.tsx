@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/sheet';
 import { useState } from 'react';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { ContactMenu } from '@/components/ContactMenu';
 import { TechStackMenu } from '@/components/TechStackMenu';
 
 const navItems = [
@@ -58,6 +59,7 @@ export default function Header() {
                 </Link>
               );
             })}
+            <ContactMenu />
             <TechStackMenu />
             <ThemeToggle />
           </nav>
@@ -87,6 +89,14 @@ export default function Header() {
                   );
                 })}
                 <div className="pt-4 border-t mt-4 space-y-3">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start gap-3"
+                    onClick={() => setMobileMenuOpen(false)}
+                    data-testid="nav-mobile-contact"
+                  >
+                    📞 Contato
+                  </Button>
                   <Button
                     variant="ghost"
                     className="w-full justify-start gap-3"
