@@ -12,17 +12,13 @@ import { useToast } from '@/hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { 
-  Trash2, Plus, Loader2, Play, Power, RotateCw, Clock, Droplets, Leaf,
-  Check, X
+  Trash2, Plus, Loader2, Play, Power, Droplets, Leaf
 } from 'lucide-react';
-import type { HortaMidia, InsertHortaMidia, HortaRegaControl, HortaRegaSchedule, InsertHortaRegaSchedule } from '@shared/schema';
-
-const diasSemana = ['segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado', 'domingo'];
+import type { HortaMidia, InsertHortaMidia, HortaRegaControl } from '@shared/schema';
 
 export default function Horta() {
   const { toast } = useToast();
   const [showFormMidia, setShowFormMidia] = useState(false);
-  const [showFormSchedule, setShowFormSchedule] = useState(false);
 
   // Queries
   const { data: midias = [], isLoading: loadingMidias } = useQuery<HortaMidia[]>({
@@ -33,10 +29,6 @@ export default function Horta() {
     queryKey: ['/api/horta-rega-control'],
   });
 
-  const { data: schedules = [], isLoading: loadingSchedules, refetch: refetchSchedules } = useQuery<HortaRegaSchedule[]>({
-    queryKey: ['/api/horta-rega-schedules'],
-  });
-
   // Forms
   const formMidia = useForm<InsertHortaMidia>({
     defaultValues: {
@@ -45,17 +37,6 @@ export default function Horta() {
       tipo: 'video',
       url: '',
       thumbnailUrl: '',
-    },
-  });
-
-  const formSchedule = useForm<InsertHortaRegaSchedule>({
-    defaultValues: {
-      titulo: '',
-      descricao: '',
-      horaLigada: '08:00',
-      horaDesligada: '18:00',
-      diasSemana: [],
-      ativo: 'sim',
     },
   });
 
@@ -96,36 +77,8 @@ export default function Horta() {
     },
   });
 
-  const createScheduleMutation = useMutation({
-    mutationFn: (data: InsertHortaRegaSchedule) => apiRequest('POST', '/api/horta-rega-schedules', data),
-    onSuccess: () => {
-      refetchSchedules();
-      toast({ title: 'Sucesso!', description: 'Agendamento criado!' });
-      formSchedule.reset();
-      setShowFormSchedule(false);
-    },
-    onError: () => {
-      toast({ title: 'Erro', description: 'Erro ao criar agendamento', variant: 'destructive' });
-    },
-  });
-
-  const deleteScheduleMutation = useMutation({
-    mutationFn: (id: number) => apiRequest('DELETE', `/api/horta-rega-schedules/${id}`),
-    onSuccess: () => {
-      refetchSchedules();
-      toast({ title: 'Sucesso!', description: 'Agendamento removido!' });
-    },
-    onError: () => {
-      toast({ title: 'Erro', description: 'Erro ao remover agendamento', variant: 'destructive' });
-    },
-  });
-
   const onSubmitMidia = (data: InsertHortaMidia) => {
     createMidiaMutation.mutate(data);
-  };
-
-  const onSubmitSchedule = (data: InsertHortaRegaSchedule) => {
-    createScheduleMutation.mutate(data);
   };
 
   const videos = midias.filter(m => m.tipo === 'video');
@@ -220,196 +173,6 @@ export default function Horta() {
               </CardContent>
             </Card>
           )}
-
-          {/* Schedule Section */}
-          <section data-testid="section-agendamentos">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl md:text-3xl font-bold flex items-center gap-2">
-                <Clock className="w-6 h-6 text-primary" />
-                Agendamentos
-              </h2>
-              <Button
-                onClick={() => setShowFormSchedule(!showFormSchedule)}
-                className="gap-2"
-                data-testid="button-add-schedule"
-              >
-                <Plus className="w-4 h-4" />
-                Novo Agendamento
-              </Button>
-            </div>
-
-            {showFormSchedule && (
-              <Card className="mb-6" data-testid="form-schedule">
-                <CardHeader>
-                  <CardTitle>Criar Novo Agendamento</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Form {...formSchedule}>
-                    <form onSubmit={formSchedule.handleSubmit(onSubmitSchedule)} className="space-y-4">
-                      <FormField
-                        control={formSchedule.control}
-                        name="titulo"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Título</FormLabel>
-                            <FormControl>
-                              <Input placeholder="Ex: Manhã" {...field} data-testid="input-schedule-titulo" required />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={formSchedule.control}
-                        name="descricao"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Descrição (opcional)</FormLabel>
-                            <FormControl>
-                              <Textarea placeholder="Ex: Rega matinal" {...field} value={field.value || ''} data-testid="textarea-schedule-desc" />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <FormField
-                          control={formSchedule.control}
-                          name="horaLigada"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Hora de Ligar</FormLabel>
-                              <FormControl>
-                                <Input type="time" {...field} data-testid="input-hora-ligada" required />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={formSchedule.control}
-                          name="horaDesligada"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Hora de Desligar</FormLabel>
-                              <FormControl>
-                                <Input type="time" {...field} data-testid="input-hora-desligada" required />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-
-                      <FormItem>
-                        <FormLabel>Dias da Semana</FormLabel>
-                        <div className="flex flex-wrap gap-2">
-                          {diasSemana.map((dia) => (
-                            <button
-                              key={dia}
-                              type="button"
-                              onClick={() => {
-                                const current = formSchedule.getValues('diasSemana') || [];
-                                if (current.includes(dia)) {
-                                  formSchedule.setValue('diasSemana', current.filter(d => d !== dia));
-                                } else {
-                                  formSchedule.setValue('diasSemana', [...current, dia]);
-                                }
-                              }}
-                              className={`px-3 py-2 rounded-md text-sm font-medium transition ${
-                                (formSchedule.getValues('diasSemana') || []).includes(dia)
-                                  ? 'bg-primary text-primary-foreground'
-                                  : 'bg-muted text-muted-foreground'
-                              }`}
-                              data-testid={`button-dia-${dia}`}
-                            >
-                              {dia.charAt(0).toUpperCase() + dia.slice(1)}
-                            </button>
-                          ))}
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-
-                      <div className="flex gap-2">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => setShowFormSchedule(false)}
-                          data-testid="button-cancel-schedule"
-                        >
-                          Cancelar
-                        </Button>
-                        <Button type="submit" disabled={createScheduleMutation.isPending} data-testid="button-submit-schedule">
-                          {createScheduleMutation.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                          Criar Agendamento
-                        </Button>
-                      </div>
-                    </form>
-                  </Form>
-                </CardContent>
-              </Card>
-            )}
-
-            {schedules.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {schedules.map((schedule) => (
-                  <Card key={schedule.id} data-testid={`schedule-card-${schedule.id}`}>
-                    <CardContent className="pt-6 space-y-3">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h3 className="font-semibold text-lg" data-testid={`text-schedule-titulo-${schedule.id}`}>
-                            {schedule.titulo}
-                          </h3>
-                          {schedule.descricao && (
-                            <p className="text-sm text-muted-foreground" data-testid={`text-schedule-desc-${schedule.id}`}>
-                              {schedule.descricao}
-                            </p>
-                          )}
-                        </div>
-                        <Badge variant={schedule.ativo === 'sim' ? 'default' : 'secondary'} data-testid={`badge-schedule-status-${schedule.id}`}>
-                          {schedule.ativo === 'sim' ? <Check className="w-3 h-3" /> : <X className="w-3 h-3" />}
-                        </Badge>
-                      </div>
-
-                      <div className="bg-muted rounded p-3 space-y-2">
-                        <div className="flex items-center gap-2 text-sm">
-                          <Clock className="w-4 h-4 text-primary" />
-                          <span data-testid={`text-schedule-hours-${schedule.id}`}>
-                            {schedule.horaLigada} - {schedule.horaDesligada}
-                          </span>
-                        </div>
-                        <div className="flex flex-wrap gap-1">
-                          {schedule.diasSemana?.map((dia) => (
-                            <Badge key={dia} variant="outline" className="text-xs" data-testid={`badge-dia-${schedule.id}-${dia}`}>
-                              {dia.substring(0, 3).toUpperCase()}
-                            </Badge>
-                          ))}
-                        </div>
-                      </div>
-
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => deleteScheduleMutation.mutate(schedule.id)}
-                        disabled={deleteScheduleMutation.isPending}
-                        data-testid={`button-delete-schedule-${schedule.id}`}
-                      >
-                        <Trash2 className="w-4 h-4 mr-1" />
-                        Remover
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-8 text-muted-foreground" data-testid="empty-schedules">
-                Nenhum agendamento criado. Clique em "Novo Agendamento" para adicionar um.
-              </div>
-            )}
-          </section>
 
           {/* Media Section */}
           <section data-testid="section-midias">
