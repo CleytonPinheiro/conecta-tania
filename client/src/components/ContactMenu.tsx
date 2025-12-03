@@ -52,7 +52,7 @@ export function ContactMenu() {
       const emailBody = `Nome: ${data.name}\nEmail: ${data.email}\nTipo: ${data.type}\n\n${data.message}`;
 
       // Abrir email client padrão
-      window.location.href = `mailto:cleyton.pinheiro@example.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
+      window.location.href = `mailto:cleyton.pinheiro.santos@escola.pr.gov.br?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
 
       toast({
         title: 'Sucesso!',
@@ -122,16 +122,16 @@ export function ContactMenu() {
 
               <DropdownMenuItem
                 onClick={() => {
-                  window.location.href = 'mailto:cleyton.pinheiro@example.com';
+                  window.location.href = 'mailto:cleyton.pinheiro.santos@escola.pr.gov.br';
                 }}
                 data-testid="contact-email"
                 className="cursor-pointer flex items-center gap-3 py-2"
               >
                 <Mail className="w-4 h-4 text-red-600" />
                 <div className="flex flex-col">
-                  <span className="font-medium text-sm">Email</span>
+                  <span className="font-medium text-sm">Email Institucional</span>
                   <span className="text-xs text-muted-foreground">
-                    cleyton.pinheiro@example.com
+                    cleyton.pinheiro.santos@escola.pr.gov.br
                   </span>
                 </div>
               </DropdownMenuItem>
