@@ -45,7 +45,8 @@ import {
   Video,
   Presentation,
   Globe,
-  ImageIcon
+  ImageIcon,
+  X
 } from 'lucide-react';
 import type { Turma, Projeto } from '@shared/schema';
 
@@ -75,6 +76,7 @@ export default function Admin() {
   const { toast } = useToast();
   const [turmaDialogOpen, setTurmaDialogOpen] = useState(false);
   const [projetoDialogOpen, setProjetoDialogOpen] = useState(false);
+  const [projetoImagePreview, setProjetoImagePreview] = useState<string>('');
 
   // Queries
   const { data: turmas = [], isLoading: loadingTurmas } = useQuery<Turma[]>({
@@ -178,7 +180,26 @@ export default function Admin() {
       linkGithub: '',
       linkDemo: '',
     });
+    setProjetoImagePreview('');
     setProjetoDialogOpen(true);
+  };
+
+  const handleProjetoImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result as string;
+        setProjetoImagePreview(base64);
+        projetoForm.setValue('imagemUrl', base64);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const clearProjetoImage = () => {
+    setProjetoImagePreview('');
+    projetoForm.setValue('imagemUrl', '');
   };
 
   const getTurmaName = (turmaId: number) => {
@@ -442,6 +463,48 @@ export default function Admin() {
                             </FormItem>
                           )}
                         />
+
+                        <div className="space-y-3 pt-4 border-t">
+                          <h4 className="font-medium text-sm text-muted-foreground flex items-center gap-2">
+                            <ImageIcon className="w-4 h-4" />
+                            Screenshot/Print (opcional)
+                          </h4>
+                          <div className="space-y-2">
+                            <label className="block">
+                              <div className="border-2 border-dashed border-border rounded-lg p-4 hover:border-primary/50 transition-colors cursor-pointer">
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={handleProjetoImageChange}
+                                  className="hidden"
+                                  data-testid="input-projeto-imagem"
+                                />
+                                <div className="text-center">
+                                  <ImageIcon className="w-6 h-6 mx-auto mb-2 text-muted-foreground" />
+                                  <p className="text-sm text-muted-foreground">Clique ou arraste uma imagem</p>
+                                </div>
+                              </div>
+                            </label>
+                            {projetoImagePreview && (
+                              <div className="relative rounded-lg overflow-hidden">
+                                <img 
+                                  src={projetoImagePreview} 
+                                  alt="Preview" 
+                                  className="w-full h-48 object-cover"
+                                  data-testid="img-projeto-preview"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={clearProjetoImage}
+                                  className="absolute top-2 right-2 bg-destructive text-destructive-foreground rounded-md p-1 hover:bg-destructive/90"
+                                  data-testid="button-clear-imagem"
+                                >
+                                  <X className="w-4 h-4" />
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
 
                         <div className="space-y-4 pt-4 border-t">
                           <h4 className="font-medium text-sm text-muted-foreground flex items-center gap-2">
