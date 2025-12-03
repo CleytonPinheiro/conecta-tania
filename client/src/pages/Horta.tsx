@@ -309,27 +309,26 @@ export default function Horta() {
           )}
 
           {/* Featured Presentation Video */}
-          <Card className="overflow-hidden max-w-4xl mx-auto border-none" data-testid="card-apresentacao">
-            <div className="relative w-full bg-black aspect-video flex items-center justify-center">
+          <div className="flex flex-col items-center" data-testid="card-apresentacao">
+            <div className="bg-black rounded-lg overflow-hidden">
               <video
                 controls
-                className="w-full h-full object-contain"
-                poster=""
+                className="max-w-full max-h-[70vh]"
                 data-testid="video-apresentacao"
               >
                 <source src={apresentacaoVideo} type="video/mp4" />
                 Seu navegador não suporta vídeo HTML5.
               </video>
             </div>
-            <CardContent className="pt-4">
+            <div className="pt-4 text-center max-w-2xl">
               <h3 className="text-lg font-semibold mb-2" data-testid="text-video-title">
                 Apresentação da Horta - Turma 2C
               </h3>
               <p className="text-sm text-muted-foreground" data-testid="text-video-description">
                 Conheça o projeto da Horta Smart do Colégio Estadual Tânia Varella apresentado pelos alunos da Turma 2C.
               </p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           {/* Media Section */}
           <section data-testid="section-midias">
