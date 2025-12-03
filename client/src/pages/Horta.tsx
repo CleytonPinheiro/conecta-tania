@@ -40,7 +40,16 @@ import {
         Lightbulb,
         Wrench,
         Target,
+        ChevronLeft,
+        ChevronRight,
 } from "lucide-react";
+import {
+        Carousel,
+        CarouselContent,
+        CarouselItem,
+        CarouselPrevious,
+        CarouselNext,
+} from "@/components/ui/carousel";
 import type {
         HortaMidia,
         InsertHortaMidia,
