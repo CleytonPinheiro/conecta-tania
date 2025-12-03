@@ -81,40 +81,42 @@ export function TechStackMenu() {
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-80" data-testid="tech-stack-menu">
-        <DropdownMenuLabel className="text-base font-bold" data-testid="tech-stack-title">
+      <DropdownMenuContent align="end" className="w-80 max-h-96 scrollbar-custom overflow-y-auto" data-testid="tech-stack-menu">
+        <DropdownMenuLabel className="text-base font-bold sticky top-0 bg-popover z-10" data-testid="tech-stack-title">
           📚 Tech Stack Completo
         </DropdownMenuLabel>
-        <p className="px-2 py-1 text-xs text-muted-foreground">
+        <p className="px-2 py-1 text-xs text-muted-foreground sticky top-8 bg-popover z-10">
           Tecnologias utilizadas no Conecta Tânia
         </p>
 
-        {techStack.map((category, idx) => (
-          <div key={category.label}>
-            {idx > 0 && <DropdownMenuSeparator />}
+        <div className="px-2">
+          {techStack.map((category, idx) => (
+            <div key={category.label}>
+              {idx > 0 && <DropdownMenuSeparator className="my-2" />}
 
-            <DropdownMenuGroup className="py-2">
-              <DropdownMenuLabel className="text-sm font-semibold px-2 py-1" data-testid={`tech-category-${idx}`}>
-                {category.label}
-              </DropdownMenuLabel>
+              <DropdownMenuGroup className="py-2">
+                <DropdownMenuLabel className="text-sm font-semibold px-2 py-1" data-testid={`tech-category-${idx}`}>
+                  {category.label}
+                </DropdownMenuLabel>
 
-              {category.items.map((item) => (
-                <DropdownMenuItem
-                  key={item.name}
-                  disabled
-                  className="cursor-default flex flex-col gap-1 py-2"
-                  data-testid={`tech-item-${item.name.replace(/\s+/g, '-').toLowerCase()}`}
-                >
-                  <div className="font-medium text-sm">{item.name}</div>
-                  <div className="text-xs text-muted-foreground">{item.description}</div>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuGroup>
-          </div>
-        ))}
+                {category.items.map((item) => (
+                  <DropdownMenuItem
+                    key={item.name}
+                    disabled
+                    className="cursor-default flex flex-col gap-1 py-2"
+                    data-testid={`tech-item-${item.name.replace(/\s+/g, '-').toLowerCase()}`}
+                  >
+                    <div className="font-medium text-sm">{item.name}</div>
+                    <div className="text-xs text-muted-foreground">{item.description}</div>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuGroup>
+            </div>
+          ))}
+        </div>
 
-        <DropdownMenuSeparator />
-        <div className="px-2 py-2 text-xs text-muted-foreground space-y-1">
+        <DropdownMenuSeparator className="my-2 sticky bottom-20" />
+        <div className="px-4 py-2 text-xs text-muted-foreground space-y-1 sticky bottom-0 bg-popover z-10">
           <p className="font-semibold">📊 Totalizando:</p>
           <p>✅ 11 tecnologias Frontend</p>
           <p>✅ 4 tecnologias Backend</p>
