@@ -154,7 +154,8 @@ export default function GuidedTutorial() {
     return (
       <button
         onClick={handleRestart}
-        className="fixed top-1/2 right-6 -translate-y-1/2 z-40 p-3 rounded-full bg-primary text-primary-foreground shadow-lg hover-elevate transition-all"
+        className="fixed right-6 z-40 p-3 rounded-full bg-primary text-primary-foreground shadow-lg hover-elevate transition-all"
+        style={{ top: '50%', transform: 'translateY(-50%)' }}
         title="Iniciar tutorial"
         data-testid="button-start-tutorial"
       >
