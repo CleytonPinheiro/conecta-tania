@@ -441,56 +441,29 @@ export default function Horta() {
                                                         </CardHeader>
                                                         <CardContent className="space-y-4">
                                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                                        <div className="space-y-4">
-                                                                                <div className="flex items-start gap-3">
-                                                                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
-                                                                                                1
-                                                                                        </div>
-                                                                                        <div>
-                                                                                                <h4 className="font-semibold text-foreground">Sensor de Umidade</h4>
-                                                                                                <p className="text-sm text-muted-foreground">
-                                                                                                        O sensor monitora constantemente a umidade do solo, 
-                                                                                                        enviando dados em tempo real para o sistema.
-                                                                                                </p>
-                                                                                        </div>
+                                                                        <div className="flex items-start gap-3">
+                                                                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
+                                                                                        1
                                                                                 </div>
-                                                                                <div className="flex items-start gap-3">
-                                                                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
-                                                                                                2
-                                                                                        </div>
-                                                                                        <div>
-                                                                                                <h4 className="font-semibold text-foreground">Microcontrolador</h4>
-                                                                                                <p className="text-sm text-muted-foreground">
-                                                                                                        Um microcontrolador processa os comandos recebidos via 
-                                                                                                        internet e aciona a válvula solenoide.
-                                                                                                </p>
-                                                                                        </div>
+                                                                                <div>
+                                                                                        <h4 className="font-semibold text-foreground">Válvula Solenoide</h4>
+                                                                                        <p className="text-sm text-muted-foreground">
+                                                                                                A válvula controla fisicamente o fluxo de água, 
+                                                                                                abrindo ou fechando conforme os comandos recebidos 
+                                                                                                via aplicativo.
+                                                                                        </p>
                                                                                 </div>
                                                                         </div>
-                                                                        <div className="space-y-4">
-                                                                                <div className="flex items-start gap-3">
-                                                                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
-                                                                                                3
-                                                                                        </div>
-                                                                                        <div>
-                                                                                                <h4 className="font-semibold text-foreground">Válvula Solenoide</h4>
-                                                                                                <p className="text-sm text-muted-foreground">
-                                                                                                        A válvula controla fisicamente o fluxo de água, 
-                                                                                                        abrindo ou fechando conforme os comandos recebidos.
-                                                                                                </p>
-                                                                                        </div>
+                                                                        <div className="flex items-start gap-3">
+                                                                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
+                                                                                        2
                                                                                 </div>
-                                                                                <div className="flex items-start gap-3">
-                                                                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
-                                                                                                4
-                                                                                        </div>
-                                                                                        <div>
-                                                                                                <h4 className="font-semibold text-foreground">Sistema de Gotejamento</h4>
-                                                                                                <p className="text-sm text-muted-foreground">
-                                                                                                        A água é distribuída de forma uniforme através do 
-                                                                                                        sistema de irrigação por gotejamento.
-                                                                                                </p>
-                                                                                        </div>
+                                                                                <div>
+                                                                                        <h4 className="font-semibold text-foreground">Sistema de Gotejamento</h4>
+                                                                                        <p className="text-sm text-muted-foreground">
+                                                                                                A água é distribuída de forma uniforme através do 
+                                                                                                sistema de irrigação por gotejamento nos canteiros.
+                                                                                        </p>
                                                                                 </div>
                                                                         </div>
                                                                 </div>
@@ -519,6 +492,49 @@ export default function Horta() {
                                                                                         <Zap className="w-3 h-3" />
                                                                                         Praticidade
                                                                                 </Badge>
+                                                                        </div>
+                                                                </div>
+                                                        </CardContent>
+                                                </Card>
+
+                                                {/* Futuras Implementações */}
+                                                <Card className="border-dashed border-2 border-muted-foreground/30" data-testid="card-futuras-implementacoes">
+                                                        <CardHeader>
+                                                                <CardTitle className="text-2xl flex items-center gap-3 text-muted-foreground">
+                                                                        <Lightbulb className="w-6 h-6 text-yellow-500" />
+                                                                        Futuras Implementações
+                                                                </CardTitle>
+                                                                <p className="text-sm text-muted-foreground">
+                                                                        Melhorias planejadas para as próximas versões do sistema
+                                                                </p>
+                                                        </CardHeader>
+                                                        <CardContent>
+                                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                                        <div className="flex items-start gap-3 p-4 bg-muted/30 rounded-lg">
+                                                                                <div className="flex-shrink-0 p-2 bg-yellow-500/10 rounded-lg">
+                                                                                        <Droplets className="w-6 h-6 text-yellow-600" />
+                                                                                </div>
+                                                                                <div>
+                                                                                        <h4 className="font-semibold text-foreground">Sensor de Umidade</h4>
+                                                                                        <p className="text-sm text-muted-foreground">
+                                                                                                Implementação de sensores para monitorar constantemente 
+                                                                                                a umidade do solo, permitindo irrigação automática 
+                                                                                                baseada nas condições reais do terreno.
+                                                                                        </p>
+                                                                                </div>
+                                                                        </div>
+                                                                        <div className="flex items-start gap-3 p-4 bg-muted/30 rounded-lg">
+                                                                                <div className="flex-shrink-0 p-2 bg-yellow-500/10 rounded-lg">
+                                                                                        <Zap className="w-6 h-6 text-yellow-600" />
+                                                                                </div>
+                                                                                <div>
+                                                                                        <h4 className="font-semibold text-foreground">Microcontrolador Dedicado</h4>
+                                                                                        <p className="text-sm text-muted-foreground">
+                                                                                                Integração de um microcontrolador para processar 
+                                                                                                dados dos sensores e tomar decisões automáticas 
+                                                                                                sobre quando e quanto irrigar.
+                                                                                        </p>
+                                                                                </div>
                                                                         </div>
                                                                 </div>
                                                         </CardContent>
