@@ -514,10 +514,13 @@ export default function Horta() {
 
                                                         {/* Video 1 */}
                                                         <Card className="overflow-hidden" data-testid="card-video-1">
-                                                                <div className="bg-black rounded-t-lg overflow-hidden">
+                                                                <div className="rounded-t-lg overflow-hidden">
                                                                         <video
-                                                                                controls
-                                                                                className="w-full max-h-[40vh] object-contain"
+                                                                                autoPlay
+                                                                                loop
+                                                                                muted
+                                                                                playsInline
+                                                                                className="w-full h-[40vh] object-cover"
                                                                                 data-testid="video-horta-1"
                                                                         >
                                                                                 <source src={hortaVideo1} type="video/mp4" />
@@ -533,10 +536,13 @@ export default function Horta() {
 
                                                         {/* Video 2 */}
                                                         <Card className="overflow-hidden" data-testid="card-video-2">
-                                                                <div className="bg-black rounded-t-lg overflow-hidden">
+                                                                <div className="rounded-t-lg overflow-hidden">
                                                                         <video
-                                                                                controls
-                                                                                className="w-full max-h-[40vh] object-contain"
+                                                                                autoPlay
+                                                                                loop
+                                                                                muted
+                                                                                playsInline
+                                                                                className="w-full h-[40vh] object-cover"
                                                                                 data-testid="video-horta-2"
                                                                         >
                                                                                 <source src={hortaVideo2} type="video/mp4" />
@@ -552,10 +558,13 @@ export default function Horta() {
 
                                                         {/* Video 3 */}
                                                         <Card className="overflow-hidden" data-testid="card-video-3">
-                                                                <div className="bg-black rounded-t-lg overflow-hidden">
+                                                                <div className="rounded-t-lg overflow-hidden">
                                                                         <video
-                                                                                controls
-                                                                                className="w-full max-h-[40vh] object-contain"
+                                                                                autoPlay
+                                                                                loop
+                                                                                muted
+                                                                                playsInline
+                                                                                className="w-full h-[40vh] object-cover"
                                                                                 data-testid="video-horta-3"
                                                                         >
                                                                                 <source src={hortaVideo3} type="video/mp4" />
