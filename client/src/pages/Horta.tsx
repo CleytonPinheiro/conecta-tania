@@ -444,11 +444,11 @@ export default function Horta() {
                                                                 </p>
                                                         </CardHeader>
                                                         <CardContent>
-                                                                <div className="max-w-md mx-auto">
+                                                                <div className="flex justify-center">
                                                                         <div className="relative rounded-xl overflow-hidden bg-black shadow-xl">
                                                                                 <video
                                                                                         src={appAcionamentoVideo}
-                                                                                        className="w-full"
+                                                                                        className="h-[70vh] max-h-[500px] w-auto"
                                                                                         controls
                                                                                         playsInline
                                                                                         data-testid="video-app-acionamento"
@@ -456,11 +456,11 @@ export default function Horta() {
                                                                                         Seu navegador não suporta a reprodução de vídeo.
                                                                                 </video>
                                                                         </div>
-                                                                        <p className="text-center text-sm text-muted-foreground mt-4">
-                                                                                Com um simples toque no aplicativo, você pode ligar ou desligar 
-                                                                                a irrigação da horta de qualquer lugar com acesso à internet.
-                                                                        </p>
                                                                 </div>
+                                                                <p className="text-center text-sm text-muted-foreground mt-4">
+                                                                        Com um simples toque no aplicativo, você pode ligar ou desligar 
+                                                                        a irrigação da horta de qualquer lugar com acesso à internet.
+                                                                </p>
                                                         </CardContent>
                                                 </Card>
 
