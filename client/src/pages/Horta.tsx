@@ -670,11 +670,11 @@ export default function Horta() {
                                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                                         {/* Foto Principal */}
                                                         <Card className="overflow-hidden" data-testid="card-foto-principal">
-                                                                <div className="bg-black rounded-t-lg overflow-hidden">
+                                                                <div className="rounded-t-lg overflow-hidden">
                                                                         <img
                                                                                 src={hortaFoto1}
                                                                                 alt="Canteiros da horta com sistema de irrigação e hortaliças plantadas"
-                                                                                className="w-full max-h-[40vh] object-contain"
+                                                                                className="w-full h-[40vh] object-cover"
                                                                                 data-testid="img-horta-principal"
                                                                         />
                                                                 </div>
