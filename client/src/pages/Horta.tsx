@@ -42,6 +42,12 @@ import {
         Target,
         ChevronLeft,
         ChevronRight,
+        Smartphone,
+        Wifi,
+        Clock,
+        Zap,
+        Settings,
+        Globe,
 } from "lucide-react";
 import {
         Carousel,
@@ -356,6 +362,167 @@ export default function Horta() {
                                                                 </CardContent>
                                                         </Card>
                                                 </div>
+                                        </section>
+
+                                        {/* Sistema de Automação */}
+                                        <section className="space-y-8" data-testid="section-automacao">
+                                                <div className="text-center space-y-3">
+                                                        <h2 className="text-3xl md:text-4xl font-bold text-foreground flex items-center justify-center gap-3">
+                                                                <Zap className="w-8 h-8 text-primary" />
+                                                                Sistema de Automação
+                                                        </h2>
+                                                        <p className="text-muted-foreground max-w-3xl mx-auto">
+                                                                Nossa horta conta com um sistema inteligente de irrigação controlado remotamente, 
+                                                                permitindo o gerenciamento eficiente da água através de tecnologia IoT.
+                                                        </p>
+                                                </div>
+
+                                                {/* Funcionalidades */}
+                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                                        {/* Controle via App */}
+                                                        <Card className="text-center" data-testid="card-automacao-app">
+                                                                <CardHeader>
+                                                                        <div className="mx-auto p-4 bg-primary/10 rounded-full w-fit">
+                                                                                <Smartphone className="w-10 h-10 text-primary" />
+                                                                        </div>
+                                                                        <CardTitle className="text-xl">Controle via Aplicativo</CardTitle>
+                                                                </CardHeader>
+                                                                <CardContent className="text-muted-foreground">
+                                                                        <p>
+                                                                                Através de um aplicativo móvel, é possível acionar o sistema de 
+                                                                                irrigação de qualquer lugar. Com apenas um toque, você libera ou 
+                                                                                bloqueia o fluxo de água para os canteiros da horta.
+                                                                        </p>
+                                                                </CardContent>
+                                                        </Card>
+
+                                                        {/* Conexão Online */}
+                                                        <Card className="text-center" data-testid="card-automacao-online">
+                                                                <CardHeader>
+                                                                        <div className="mx-auto p-4 bg-green-500/10 rounded-full w-fit">
+                                                                                <Globe className="w-10 h-10 text-green-600" />
+                                                                        </div>
+                                                                        <CardTitle className="text-xl">Acionamento Online</CardTitle>
+                                                                </CardHeader>
+                                                                <CardContent className="text-muted-foreground">
+                                                                        <p>
+                                                                                O sistema está conectado à internet 24 horas por dia, permitindo 
+                                                                                o monitoramento e controle remoto em tempo real. A comunicação é 
+                                                                                feita através de uma conexão Wi-Fi segura e estável.
+                                                                        </p>
+                                                                </CardContent>
+                                                        </Card>
+
+                                                        {/* Agendamento */}
+                                                        <Card className="text-center" data-testid="card-automacao-agendamento">
+                                                                <CardHeader>
+                                                                        <div className="mx-auto p-4 bg-blue-500/10 rounded-full w-fit">
+                                                                                <Clock className="w-10 h-10 text-blue-600" />
+                                                                        </div>
+                                                                        <CardTitle className="text-xl">Programação Automática</CardTitle>
+                                                                </CardHeader>
+                                                                <CardContent className="text-muted-foreground">
+                                                                        <p>
+                                                                                É possível programar dia e hora específicos para a liberação e 
+                                                                                bloqueio automático da irrigação. O sistema executa as tarefas 
+                                                                                agendadas sem necessidade de intervenção manual.
+                                                                        </p>
+                                                                </CardContent>
+                                                        </Card>
+                                                </div>
+
+                                                {/* Como Funciona */}
+                                                <Card className="bg-gradient-to-br from-primary/5 via-background to-accent/5 border-primary/20" data-testid="card-como-funciona">
+                                                        <CardHeader>
+                                                                <CardTitle className="text-2xl flex items-center gap-3">
+                                                                        <Settings className="w-6 h-6 text-primary" />
+                                                                        Como Funciona
+                                                                </CardTitle>
+                                                        </CardHeader>
+                                                        <CardContent className="space-y-4">
+                                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                                        <div className="space-y-4">
+                                                                                <div className="flex items-start gap-3">
+                                                                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
+                                                                                                1
+                                                                                        </div>
+                                                                                        <div>
+                                                                                                <h4 className="font-semibold text-foreground">Sensor de Umidade</h4>
+                                                                                                <p className="text-sm text-muted-foreground">
+                                                                                                        O sensor monitora constantemente a umidade do solo, 
+                                                                                                        enviando dados em tempo real para o sistema.
+                                                                                                </p>
+                                                                                        </div>
+                                                                                </div>
+                                                                                <div className="flex items-start gap-3">
+                                                                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
+                                                                                                2
+                                                                                        </div>
+                                                                                        <div>
+                                                                                                <h4 className="font-semibold text-foreground">Microcontrolador</h4>
+                                                                                                <p className="text-sm text-muted-foreground">
+                                                                                                        Um microcontrolador processa os comandos recebidos via 
+                                                                                                        internet e aciona a válvula solenoide.
+                                                                                                </p>
+                                                                                        </div>
+                                                                                </div>
+                                                                        </div>
+                                                                        <div className="space-y-4">
+                                                                                <div className="flex items-start gap-3">
+                                                                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
+                                                                                                3
+                                                                                        </div>
+                                                                                        <div>
+                                                                                                <h4 className="font-semibold text-foreground">Válvula Solenoide</h4>
+                                                                                                <p className="text-sm text-muted-foreground">
+                                                                                                        A válvula controla fisicamente o fluxo de água, 
+                                                                                                        abrindo ou fechando conforme os comandos recebidos.
+                                                                                                </p>
+                                                                                        </div>
+                                                                                </div>
+                                                                                <div className="flex items-start gap-3">
+                                                                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">
+                                                                                                4
+                                                                                        </div>
+                                                                                        <div>
+                                                                                                <h4 className="font-semibold text-foreground">Sistema de Gotejamento</h4>
+                                                                                                <p className="text-sm text-muted-foreground">
+                                                                                                        A água é distribuída de forma uniforme através do 
+                                                                                                        sistema de irrigação por gotejamento.
+                                                                                                </p>
+                                                                                        </div>
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
+
+                                                                {/* Benefícios */}
+                                                                <div className="mt-6 pt-6 border-t border-border">
+                                                                        <h4 className="font-semibold text-foreground mb-3">Benefícios da Automação:</h4>
+                                                                        <div className="flex flex-wrap gap-2">
+                                                                                <Badge variant="secondary" className="gap-1">
+                                                                                        <Droplets className="w-3 h-3" />
+                                                                                        Economia de Água
+                                                                                </Badge>
+                                                                                <Badge variant="secondary" className="gap-1">
+                                                                                        <Clock className="w-3 h-3" />
+                                                                                        Irrigação no Horário Ideal
+                                                                                </Badge>
+                                                                                <Badge variant="secondary" className="gap-1">
+                                                                                        <Wifi className="w-3 h-3" />
+                                                                                        Controle Remoto
+                                                                                </Badge>
+                                                                                <Badge variant="secondary" className="gap-1">
+                                                                                        <Leaf className="w-3 h-3" />
+                                                                                        Plantas Mais Saudáveis
+                                                                                </Badge>
+                                                                                <Badge variant="secondary" className="gap-1">
+                                                                                        <Zap className="w-3 h-3" />
+                                                                                        Praticidade
+                                                                                </Badge>
+                                                                        </div>
+                                                                </div>
+                                                        </CardContent>
+                                                </Card>
                                         </section>
 
                                         {/* Control Panel */}
