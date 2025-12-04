@@ -66,6 +66,7 @@ import hortaFoto1 from "@assets/Horta1_1764805989352.jpg";
 import hortaVideo1 from "@assets/Vídeo_Horta1_1764805989354.mp4";
 import hortaVideo2 from "@assets/Vídeo_horta_2_1764805989353.mp4";
 import hortaVideo3 from "@assets/Vídeo_Horta_3_1764805989354.mp4";
+import appAcionamentoVideo from "@assets/Vídeo_App_Acionamento_Horta_1764807548420.mp4";
 
 const MASTER_PASSWORD = "Horta2024";
 
@@ -430,6 +431,38 @@ export default function Horta() {
                                                                 </CardContent>
                                                         </Card>
                                                 </div>
+
+                                                {/* Demonstração do Aplicativo */}
+                                                <Card className="overflow-hidden" data-testid="card-demo-app">
+                                                        <CardHeader className="text-center">
+                                                                <CardTitle className="text-2xl flex items-center justify-center gap-3">
+                                                                        <Play className="w-6 h-6 text-primary" />
+                                                                        Veja o App em Ação
+                                                                </CardTitle>
+                                                                <p className="text-muted-foreground">
+                                                                        Demonstração do acionamento e desativação da irrigação pelo aplicativo
+                                                                </p>
+                                                        </CardHeader>
+                                                        <CardContent>
+                                                                <div className="max-w-md mx-auto">
+                                                                        <div className="relative rounded-xl overflow-hidden bg-black shadow-xl">
+                                                                                <video
+                                                                                        src={appAcionamentoVideo}
+                                                                                        className="w-full"
+                                                                                        controls
+                                                                                        playsInline
+                                                                                        data-testid="video-app-acionamento"
+                                                                                >
+                                                                                        Seu navegador não suporta a reprodução de vídeo.
+                                                                                </video>
+                                                                        </div>
+                                                                        <p className="text-center text-sm text-muted-foreground mt-4">
+                                                                                Com um simples toque no aplicativo, você pode ligar ou desligar 
+                                                                                a irrigação da horta de qualquer lugar com acesso à internet.
+                                                                        </p>
+                                                                </div>
+                                                        </CardContent>
+                                                </Card>
 
                                                 {/* Como Funciona */}
                                                 <Card className="bg-gradient-to-br from-primary/5 via-background to-accent/5 border-primary/20" data-testid="card-como-funciona">
